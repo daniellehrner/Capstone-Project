@@ -4,12 +4,13 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MessageListActivity"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,14 +20,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MessageDetailActivity"
-            android:label="@string/title_message_detail"
-            android:parentActivityName=".MessageListActivity"
-            android:theme="@style/AppTheme.NoActionBar">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="me.lehrner.newsgroupsndy.MessageListActivity" />
-        </activity>
+            android:name=".ui.AddServerActivity"
+            android:parentActivityName=".ui.MainActivity" />
     </application>
 
 </manifest>
