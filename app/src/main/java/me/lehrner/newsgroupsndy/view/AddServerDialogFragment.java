@@ -1,5 +1,20 @@
-package me.lehrner.newsgroupsndy.ui;
+/*
+ * Copyright (C) 2016 Daniel Lehrner
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
+package me.lehrner.newsgroupsndy.view;
 
 import android.app.Dialog;
 import android.os.Bundle;
@@ -10,15 +25,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import javax.inject.Inject;
+
+import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
+import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private String mServerName = null;
-    private String mServerUrl = null;
-    private String mUserName = null;
-    private String mUserMail = null;
+    @Inject ServerPresenter mServerPresenter;
 
     public AddServerDialogFragment() {
         // Required empty public constructor
@@ -31,6 +47,8 @@ public class AddServerDialogFragment extends AppCompatDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
+
         // Inflate the layout to use as dialog or embedded fragment
         return inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
     }

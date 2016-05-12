@@ -3,6 +3,7 @@
     package="me.lehrner.newsgroupsndy">
 
     <application
+        android:name=".NDYApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -10,7 +11,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.MainActivity"
+            android:name=".view.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -20,8 +21,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.AddServerActivity"
-            android:parentActivityName=".ui.MainActivity"
+            android:name=".view.AddServerActivity"
+            android:parentActivityName=".view.MainActivity"
             android:label="@string/new_server"
             android:theme="@style/AppTheme.NoActionBar"/>
     </application>

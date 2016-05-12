@@ -7,7 +7,7 @@
     android:background="@color/colorPrimary"
     android:paddingStart="@dimen/app_margin"
     android:paddingEnd="@dimen/app_margin"
-    tools:context="me.lehrner.newsgroupsndy.ui.AddServerActivity">
+    tools:context="me.lehrner.newsgroupsndy.view.AddServerActivity">
 
     <ImageButton
         android:layout_width="wrap_content"

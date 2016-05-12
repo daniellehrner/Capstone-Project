@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="@dimen/app_margin"
     android:orientation="vertical"
-    tools:context="me.lehrner.newsgroupsndy.ui.AddServerDialogFragment">
+    tools:context="me.lehrner.newsgroupsndy.view.AddServerDialogFragment">
 
     <TextView
         android:layout_width="match_parent"

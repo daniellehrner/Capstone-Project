@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="me.lehrner.newsgroupsndy.ui.AddServerActivity">
+    tools:context="me.lehrner.newsgroupsndy.view.AddServerActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,10 +23,11 @@
 
     <fragment xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:name="me.lehrner.newsgroupsndy.ui.AddServerDialogFragment"
+        android:name="me.lehrner.newsgroupsndy.view.AddServerDialogFragment"
         tools:layout="@layout/fragment_add_server_dialog"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/add_server_fragment"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>
