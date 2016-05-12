@@ -13,6 +13,7 @@
         android:text="@string/server_name_title" />
 
     <EditText
+        android:id="@+id/text_server_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -26,6 +27,7 @@
         android:text="@string/server_url_title" />
 
     <EditText
+        android:id="@+id/text_server_url"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -39,6 +41,7 @@
         android:text="@string/user_name_title" />
 
     <EditText
+        android:id="@+id/text_user_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/activity_vertical_margin"
@@ -53,6 +56,7 @@
         android:text="@string/user_mail_title" />
 
     <EditText
+        android:id="@+id/text_user_mail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:inputType="textEmailAddress"

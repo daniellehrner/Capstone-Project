@@ -21,9 +21,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+
 
 import javax.inject.Inject;
 
@@ -31,10 +34,14 @@ import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 
-public class AddServerDialogFragment extends AppCompatDialogFragment {
-    private final String LOG_TAG = this.getClass().getSimpleName();
+public class AddServerDialogFragment extends AppCompatDialogFragment
+                                     implements AddServerView,
+                                                AddServerClickHandler {
+    private static final String SERVER_ID = "server_id";
 
     @Inject ServerPresenter mServerPresenter;
+
+    private View mAddServerView;
 
     public AddServerDialogFragment() {
         // Required empty public constructor
@@ -47,12 +54,12 @@ public class AddServerDialogFragment extends AppCompatDialogFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        mAddServerView = inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
+
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        // Inflate the layout to use as dialog or embedded fragment
-        return inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
+        return mAddServerView;
     }
-
 
     @NonNull
     @Override
@@ -60,11 +67,66 @@ public class AddServerDialogFragment extends AppCompatDialogFragment {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
-        View titleView = inflater.inflate(R.layout.dialog_add_server, null);
 
-        builder.setView(R.layout.fragment_add_server_dialog)
+        View titleView = inflater.inflate(R.layout.dialog_add_server, null);
+        mAddServerView = inflater.inflate(R.layout.fragment_add_server_dialog, null);
+
+        builder.setView(mAddServerView)
                 .setCustomTitle(titleView);
 
         return builder.create();
+    }
+
+    @Override
+    public int getServerId() {
+        return getArguments() == null ?
+                AddServerView.SERVER_ID_NOT_SET :
+                getArguments().getInt(SERVER_ID, 0);
+    }
+
+    @Override
+    public String getServerName() {
+        return getStringFromEditText(R.id.text_server_name);
+    }
+
+    @Override
+    public String getServerUrl() {
+        return getStringFromEditText(R.id.text_server_url);
+    }
+
+    @Override
+    public String getUserName() {
+        return getStringFromEditText(R.id.text_user_name);
+    }
+
+    @Override
+    public String getUserMail() {
+        return getStringFromEditText(R.id.text_user_mail);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mServerPresenter.setView(this);
+    }
+
+    @Override
+    public void onServerSave() {
+        mServerPresenter.saveServer();
+    }
+
+    private String getStringFromEditText(int viewId) {
+        EditText editText;
+
+        Dialog dialog = getDialog();
+
+        if (dialog != null) {
+            editText = (EditText) dialog.findViewById(viewId);
+        }
+        else {
+            editText = (EditText) getActivity().findViewById(viewId);
+        }
+
+        return editText.getText().toString();
     }
 }

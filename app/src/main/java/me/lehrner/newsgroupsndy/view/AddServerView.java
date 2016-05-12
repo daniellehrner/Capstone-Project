@@ -14,12 +14,14 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.presenter;
+package me.lehrner.newsgroupsndy.view;
 
-import me.lehrner.newsgroupsndy.view.AddServerView;
+public interface AddServerView {
+    int SERVER_ID_NOT_SET = -1;
 
-public interface ServerPresenter {
-    void saveServer();
-    void setView(AddServerView v);
-    void loadServerDetails();
+    int getServerId();
+    String getServerName();
+    String getServerUrl();
+    String getUserName();
+    String getUserMail();
 }

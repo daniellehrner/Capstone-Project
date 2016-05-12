@@ -18,6 +18,7 @@ package me.lehrner.newsgroupsndy.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -28,6 +29,7 @@ import android.view.View;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -36,12 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.server_list) RecyclerView mServerListView;
 
+    private AddServerClickHandler mServerClickHandler;
+
     private boolean mTwoPane = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        ((NDYApplication) getApplication()).getComponent().inject(this);
         ButterKnife.bind(this);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -75,7 +81,9 @@ public class MainActivity extends AppCompatActivity {
 
     @SuppressWarnings("unused")
     public void onAddServerSave(View view) {
-        Log.d(LOG_TAG, "save");
+        if (mServerClickHandler != null) {
+            mServerClickHandler.onServerSave();
+        }
     }
 
     @SuppressWarnings("unused")
@@ -84,5 +92,16 @@ public class MainActivity extends AppCompatActivity {
         AddServerDialogFragment addServerDialogFragment =
                 (AddServerDialogFragment) fm.findFragmentByTag(ADD_SERVER_DIALOG_TAG);
         addServerDialogFragment.getDialog().cancel();
+    }
+
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        Log.d(LOG_TAG, "Attach fragment");
+        try {
+            mServerClickHandler = (AddServerClickHandler) fragment;
+        }
+        catch (ClassCastException e) {
+            Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
+        }
     }
 }

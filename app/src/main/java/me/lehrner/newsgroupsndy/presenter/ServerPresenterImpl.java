@@ -16,12 +16,46 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
+import android.util.Log;
+
+import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
+import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class ServerPresenterImpl implements ServerPresenter {
+    private final String LOG_TAG = this.getClass().getSimpleName();
+
     private ServerRepository mServerRepository;
+    private AddServerView mAddServerView;
+    private Server mServer;
 
     public ServerPresenterImpl(ServerRepository serverRepository) {
         mServerRepository = serverRepository;
+    }
+
+    @Override
+    public void saveServer() {
+        if (mServer == null) {
+            return;
+        }
+
+        mServer.setServerName(mAddServerView.getServerName());
+        mServer.setServerUrl(mAddServerView.getServerUrl());
+        mServer.setUserName(mAddServerView.getUserName());
+        mServer.setUserMail(mAddServerView.getUserMail());
+
+        mServerRepository.saveServer(mServer);
+    }
+
+    @Override
+    public void setView(AddServerView v) {
+        mAddServerView = v;
+        loadServerDetails();
+    }
+
+    @Override
+    public void loadServerDetails() {
+        int serverId = mAddServerView.getServerId();
+        mServer = mServerRepository.getServer(serverId);
     }
 }

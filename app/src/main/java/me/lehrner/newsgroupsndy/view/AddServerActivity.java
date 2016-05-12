@@ -16,6 +16,7 @@
 
 package me.lehrner.newsgroupsndy.view;
 
+import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,6 +30,8 @@ import me.lehrner.newsgroupsndy.R;
 
 public class AddServerActivity extends AppCompatActivity {
     private final String LOG_TAG = this.getClass().getSimpleName();
+
+    AddServerClickHandler mServerClickHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +58,23 @@ public class AddServerActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_server:
-                Log.d(LOG_TAG, "Save server");
+                if (mServerClickHandler != null) {
+                    mServerClickHandler.onServerSave();
+                }
                 return true;
 
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public void onAttachFragment (Fragment fragment) {
+        try {
+            mServerClickHandler = (AddServerClickHandler) fragment;
+        }
+        catch (ClassCastException e) {
+            Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
         }
     }
 }

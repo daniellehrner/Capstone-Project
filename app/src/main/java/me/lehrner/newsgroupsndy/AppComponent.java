@@ -20,9 +20,11 @@ import javax.inject.Singleton;
 
 import dagger.Component;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
+import me.lehrner.newsgroupsndy.view.MainActivity;
 
 @Singleton
 @Component(modules = { AppModule.class })
 public interface AppComponent {
     void inject(AddServerDialogFragment target);
+    void inject(MainActivity target);
 }
