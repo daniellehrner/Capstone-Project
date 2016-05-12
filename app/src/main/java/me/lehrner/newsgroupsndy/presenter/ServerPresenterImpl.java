@@ -25,7 +25,7 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private ServerRepository mServerRepository;
+    private final ServerRepository mServerRepository;
     private AddServerView mAddServerView;
     private Server mServer;
 

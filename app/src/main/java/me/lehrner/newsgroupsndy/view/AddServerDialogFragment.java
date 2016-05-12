@@ -16,17 +16,16 @@
 
 package me.lehrner.newsgroupsndy.view;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-
 
 import javax.inject.Inject;
 
@@ -41,8 +40,6 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
 
     @Inject ServerPresenter mServerPresenter;
 
-    private View mAddServerView;
-
     public AddServerDialogFragment() {
         // Required empty public constructor
     }
@@ -54,13 +51,12 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mAddServerView = inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
-
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        return mAddServerView;
+        return inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
     }
 
+    @SuppressLint("InflateParams")
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -68,10 +64,10 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
 
         LayoutInflater inflater = getActivity().getLayoutInflater();
 
+        @SuppressLint("InflateParams")
         View titleView = inflater.inflate(R.layout.dialog_add_server, null);
-        mAddServerView = inflater.inflate(R.layout.fragment_add_server_dialog, null);
 
-        builder.setView(mAddServerView)
+        builder.setView(R.layout.fragment_add_server_dialog)
                 .setCustomTitle(titleView);
 
         return builder.create();

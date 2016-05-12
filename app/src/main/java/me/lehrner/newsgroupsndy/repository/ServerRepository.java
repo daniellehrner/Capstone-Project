@@ -19,6 +19,6 @@ package me.lehrner.newsgroupsndy.repository;
 import me.lehrner.newsgroupsndy.model.Server;
 
 public interface ServerRepository {
-    public Server getServer(int id);
-    public void saveServer(Server s);
+    Server getServer(int id);
+    void saveServer(Server s);
 }
