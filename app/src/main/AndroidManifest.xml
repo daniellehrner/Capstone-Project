@@ -21,7 +21,9 @@
         </activity>
         <activity
             android:name=".ui.AddServerActivity"
-            android:parentActivityName=".ui.MainActivity" />
+            android:parentActivityName=".ui.MainActivity"
+            android:label="@string/new_server"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

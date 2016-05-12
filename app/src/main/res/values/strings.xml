@@ -1,8 +1,16 @@
 <resources>
     <string name="app_name">Newsgroups NDY</string>
-    <string name="title_message_detail">Message Detail</string>
-    <string name="title_activity_main">MainActivity</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="server_name_hint">Example server</string>
+    <string name="server_name_title">Server name</string>
+    <string name="server_url_title">Server URL</string>
+    <string name="server_url_hint">news.example.com</string>
+    <string name="user_name_title">Your name</string>
+    <string name="user_name_hint">Jane Doe</string>
+    <string name="user_mail_title">Your email</string>
+    <string name="user_mail_hint">jane.doe@example.com</string>
+    <string name="new_server">New server</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
 </resources>

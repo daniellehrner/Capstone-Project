@@ -15,10 +15,11 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/server_list"
         android:name="me.lehrner.newsgroupsndy..ui.MainFragment"
-        android:layout_width="@dimen/item_width"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
+        android:layout_weight="1"
         app:layoutManager="LinearLayoutManager"
         tools:context="me.lehrner.newsgroupsndy.ui.MainActivity"
         tools:listitem="@layout/main_content" />
@@ -27,6 +28,7 @@
         android:id="@+id/groups_fragment_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2" />
+        android:layout_weight="2"
+        tools:ignore="InconsistentLayout" />
 
 </LinearLayout>
