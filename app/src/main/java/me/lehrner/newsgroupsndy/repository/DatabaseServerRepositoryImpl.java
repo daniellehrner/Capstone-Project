@@ -16,8 +16,10 @@
 
 package me.lehrner.newsgroupsndy.repository;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -29,7 +31,6 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 public class DatabaseServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private Server mServer;
     private Context mContext;
 
     public DatabaseServerRepositoryImpl(Context context) {
@@ -38,27 +39,26 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
 
     @Override
     public Server getServer(int id) {
+        Server server;
         id = 1;
-
         if (id == AddServerView.SERVER_ID_NOT_SET) {
-            mServer = new Server();
-            mServer.setId(0);
-            mServer.setServerName("");
-            mServer.setServerUrl("");
-            mServer.setUserName("");
-            mServer.setUserMail("");
+            server = new Server();
+            server.setId(0);
+            server.setServerName("");
+            server.setServerUrl("");
+            server.setUserName("");
+            server.setUserMail("");
         }
         else {
-            mServer = getServerFromDb(id);
+            server = getServerFromDb(id);
         }
 
-        return mServer;
+        return server;
     }
 
     private Server getServerFromDb(int id) {
-        Log.d(LOG_TAG, "getServerFromDb");
-
         Server s = new Server();
+        s.setId(id);
 
         ServerDbHelper serverDbHelper = new ServerDbHelper(mContext);
         SQLiteDatabase db = serverDbHelper.getReadableDatabase();
@@ -94,10 +94,25 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
     }
 
     @Override
-    public void saveServer(Server s) {
-        Log.d(LOG_TAG, "Saving server with name " + s.getServerName());
-        Log.d(LOG_TAG, "Saving server with url " + s.getServerUrl());
-        Log.d(LOG_TAG, "Saving server with user name " + s.getUserName());
-        Log.d(LOG_TAG, "Saving server with user mail " + s.getUserMail());
+    public boolean saveServer(Server s) {
+        ServerDbHelper serverDbHelper = new ServerDbHelper(mContext);
+        SQLiteDatabase db = serverDbHelper.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(ServerEntry._ID, s.getId());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_NAME, s.getServerName());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_URL, s.getServerUrl());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_USER, s.getUserName());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_MAIL, s.getUserMail());
+
+        try {
+            db.replaceOrThrow(ServerEntry.TABLE_NAME, null, values);
+        }
+        catch (SQLException e) {
+            Log.e(LOG_TAG, "Inserting row not successful: " + e.toString());
+            return false;
+        }
+
+        return true;
     }
 }

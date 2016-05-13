@@ -14,11 +14,22 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.repository;
+package me.lehrner.newsgroupsndy.view.tasks;
 
-import me.lehrner.newsgroupsndy.model.Server;
+import android.os.AsyncTask;
 
-public interface ServerRepository {
-    Server getServer(int id);
-    boolean saveServer(Server s);
+import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
+
+public class SaveServerAsyncTask extends AsyncTask<Void, Void, Void> {
+    private ServerPresenter mServerPresenter;
+
+    public SaveServerAsyncTask(ServerPresenter presenter) {
+        mServerPresenter = presenter;
+    }
+
+    @Override
+    protected Void doInBackground(Void... params) {
+        mServerPresenter.saveServer();
+        return null;
+    }
 }

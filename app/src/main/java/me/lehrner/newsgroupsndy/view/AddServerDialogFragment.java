@@ -127,7 +127,6 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     public void onResume() {
         super.onResume();
 
-        Log.d(LOG_TAG, "Calling AsyncTask");
         GetServerAsyncTask getServer = new GetServerAsyncTask(mServerPresenter, this);
         getServer.execute();
     }
@@ -152,8 +151,8 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
         return editText.getText().toString();
     }
 
-    private void setStringInEditText(int viewId, String s) {
-        EditText editText;
+    private void setStringInEditText(int viewId, final String s) {
+        final EditText editText;
 
         Dialog dialog = getDialog();
 
@@ -164,6 +163,10 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
             editText = (EditText) getActivity().findViewById(viewId);
         }
 
-        editText.setText(s);
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                editText.setText(s);
+            }
+        });
     }
 }

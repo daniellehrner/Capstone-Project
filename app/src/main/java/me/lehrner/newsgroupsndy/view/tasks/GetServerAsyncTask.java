@@ -27,15 +27,14 @@ public class GetServerAsyncTask extends AsyncTask<Void, Void, Void> {
     private ServerPresenter mServerPresenter;
     private AddServerView mAddServerView;
 
-    public GetServerAsyncTask(ServerPresenter mServerPresenter,
-                              AddServerView mAddServerView) {
-        this.mServerPresenter = mServerPresenter;
-        this.mAddServerView = mAddServerView;
+    public GetServerAsyncTask(ServerPresenter serverPresenter,
+                              AddServerView addServerView) {
+        mServerPresenter = serverPresenter;
+        mAddServerView = addServerView;
     }
 
     @Override
     protected Void doInBackground(Void... params) {
-        Log.d(LOG_TAG, "setView");
         mServerPresenter.setView(mAddServerView);
         return null;
     }

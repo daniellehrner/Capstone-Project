@@ -27,7 +27,6 @@ public class ServerPresenterImpl implements ServerPresenter {
 
     private final ServerRepository mServerRepository;
     private AddServerView mAddServerView;
-    private Server mServer;
 
     public ServerPresenterImpl(ServerRepository serverRepository) {
         mServerRepository = serverRepository;
@@ -35,16 +34,25 @@ public class ServerPresenterImpl implements ServerPresenter {
 
     @Override
     public void saveServer() {
-        if (mServer == null) {
+        if (mAddServerView == null) {
             return;
         }
 
-        mServer.setServerName(mAddServerView.getServerName());
-        mServer.setServerUrl(mAddServerView.getServerUrl());
-        mServer.setUserName(mAddServerView.getUserName());
-        mServer.setUserMail(mAddServerView.getUserMail());
+        Server server = new Server();
 
-        mServerRepository.saveServer(mServer);
+        server.setId(1);
+//        server.setId(mAddServerView.getServerId());
+        server.setServerName(mAddServerView.getServerName());
+        server.setServerUrl(mAddServerView.getServerUrl());
+        server.setUserName(mAddServerView.getUserName());
+        server.setUserMail(mAddServerView.getUserMail());
+
+        if (mServerRepository.saveServer(server)) {
+            Log.d(LOG_TAG, "Save success");
+        }
+        else {
+            Log.d(LOG_TAG, "Save error");
+        }
     }
 
     @Override
@@ -55,14 +63,17 @@ public class ServerPresenterImpl implements ServerPresenter {
 
     @Override
     public void loadServerDetails() {
-        int serverId = mAddServerView.getServerId();
-        Log.d(LOG_TAG, "getServer");
-        mServer = mServerRepository.getServer(serverId);
+        if (mAddServerView == null) {
+            return;
+        }
 
-        Log.d(LOG_TAG, "setServer in View");
-        mAddServerView.setServerName(mServer.getServerName());
-        mAddServerView.setServerUrl(mServer.getServerUrl());
-        mAddServerView.setUserName(mServer.getUserName());
-        mAddServerView.setUserMail(mServer.getUserMail());
+        int serverId = mAddServerView.getServerId();
+        Server server = mServerRepository.getServer(serverId);
+
+        Log.d(LOG_TAG, "Db to View");
+        mAddServerView.setServerName(server.getServerName());
+        mAddServerView.setServerUrl(server.getServerUrl());
+        mAddServerView.setUserName(server.getUserName());
+        mAddServerView.setUserMail(server.getUserMail());
     }
 }
