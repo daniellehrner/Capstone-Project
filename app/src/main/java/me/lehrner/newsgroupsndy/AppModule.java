@@ -16,10 +16,14 @@
 
 package me.lehrner.newsgroupsndy;
 
+import android.app.Application;
+import android.content.Context;
+
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import me.lehrner.newsgroupsndy.model.ServerDbHelper;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenterImpl;
 import me.lehrner.newsgroupsndy.repository.DatabaseServerRepositoryImpl;
@@ -27,10 +31,22 @@ import me.lehrner.newsgroupsndy.repository.ServerRepository;
 
 @Module
 public class AppModule {
+    private final Application mApplication;
+
+    public AppModule(Application application) {
+        mApplication = application;
+    }
+
     @Provides
     @Singleton
-    public ServerRepository provideServerRepository() {
-        return new DatabaseServerRepositoryImpl();
+    public Context provideContext() {
+        return mApplication;
+    }
+
+    @Provides
+    @Singleton
+    public ServerRepository provideServerRepository(Context context) {
+        return new DatabaseServerRepositoryImpl(context);
     }
 
     @Provides

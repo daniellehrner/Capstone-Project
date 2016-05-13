@@ -24,4 +24,8 @@ public interface AddServerView {
     String getServerUrl();
     String getUserName();
     String getUserMail();
+    void setServerName(String s);
+    void setServerUrl(String s);
+    void setUserName(String s);
+    void setUserMail(String s);
 }

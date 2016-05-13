@@ -16,18 +16,30 @@
 
 package me.lehrner.newsgroupsndy.repository;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
 import me.lehrner.newsgroupsndy.model.Server;
+import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
+import me.lehrner.newsgroupsndy.model.ServerDbHelper;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class DatabaseServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private Server mServer;
+    private Context mContext;
+
+    public DatabaseServerRepositoryImpl(Context context) {
+        mContext = context;
+    }
 
     @Override
     public Server getServer(int id) {
+        id = 1;
+
         if (id == AddServerView.SERVER_ID_NOT_SET) {
             mServer = new Server();
             mServer.setId(0);
@@ -36,8 +48,49 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
             mServer.setUserName("");
             mServer.setUserMail("");
         }
+        else {
+            mServer = getServerFromDb(id);
+        }
 
         return mServer;
+    }
+
+    private Server getServerFromDb(int id) {
+        Log.d(LOG_TAG, "getServerFromDb");
+
+        Server s = new Server();
+
+        ServerDbHelper serverDbHelper = new ServerDbHelper(mContext);
+        SQLiteDatabase db = serverDbHelper.getReadableDatabase();
+
+        String[] projection = {
+                ServerEntry.COLUMN_NAME_SERVER_NAME,
+                ServerEntry.COLUMN_NAME_SERVER_URL,
+                ServerEntry.COLUMN_NAME_SERVER_USER,
+                ServerEntry.COLUMN_NAME_SERVER_MAIL,
+        };
+        String selection = ServerEntry._ID + " = ?";
+        String[] selectionArgs = {String.valueOf(id)};
+
+        Cursor getServerCursor = db.query(
+                ServerEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
+        getServerCursor.moveToFirst();
+        s.setServerName(getServerCursor.getString(0));
+        s.setServerUrl(getServerCursor.getString(1));
+        s.setUserName(getServerCursor.getString(2));
+        s.setUserMail(getServerCursor.getString(3));
+
+        getServerCursor.close();
+
+        return s;
     }
 
     @Override

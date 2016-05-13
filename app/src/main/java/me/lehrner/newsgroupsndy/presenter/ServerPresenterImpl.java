@@ -56,6 +56,13 @@ public class ServerPresenterImpl implements ServerPresenter {
     @Override
     public void loadServerDetails() {
         int serverId = mAddServerView.getServerId();
+        Log.d(LOG_TAG, "getServer");
         mServer = mServerRepository.getServer(serverId);
+
+        Log.d(LOG_TAG, "setServer in View");
+        mAddServerView.setServerName(mServer.getServerName());
+        mAddServerView.setServerUrl(mServer.getServerUrl());
+        mAddServerView.setUserName(mServer.getUserName());
+        mAddServerView.setUserMail(mServer.getUserMail());
     }
 }

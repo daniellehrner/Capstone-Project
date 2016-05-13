@@ -23,6 +23,10 @@ public class Server {
     private String mUserName;
     private String mUserMail;
 
+    public Server() {
+        // empty constructor
+    }
+
     public int getId() {
         return mId;
     }

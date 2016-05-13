@@ -19,6 +19,7 @@ package me.lehrner.newsgroupsndy;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import me.lehrner.newsgroupsndy.repository.DatabaseServerRepositoryImpl;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
 import me.lehrner.newsgroupsndy.view.MainActivity;
 

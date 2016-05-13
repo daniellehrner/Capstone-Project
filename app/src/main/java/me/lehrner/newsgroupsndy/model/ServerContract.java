@@ -14,24 +14,19 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy;
+package me.lehrner.newsgroupsndy.model;
 
-import android.app.Application;
+import android.provider.BaseColumns;
 
-public class NDYApplication extends Application {
-
-    private AppComponent component;
-
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-
-        component = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-
+public final class ServerContract {
+    public ServerContract() {
     }
 
-    public AppComponent getComponent() {
-        return  component;
+    public static abstract class ServerEntry implements BaseColumns {
+        public static final String TABLE_NAME = "server";
+        public static final String COLUMN_NAME_SERVER_NAME = "serverName";
+        public static final String COLUMN_NAME_SERVER_URL = "serverUrl";
+        public static final String COLUMN_NAME_SERVER_USER = "userName";
+        public static final String COLUMN_NAME_SERVER_MAIL = "userMail";
     }
 }

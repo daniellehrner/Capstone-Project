@@ -22,6 +22,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,10 +33,12 @@ import javax.inject.Inject;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
+import me.lehrner.newsgroupsndy.view.tasks.GetServerAsyncTask;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment
                                      implements AddServerView,
                                                 AddServerClickHandler {
+    private final String LOG_TAG = this.getClass().getSimpleName();
     private static final String SERVER_ID = "server_id";
 
     @Inject ServerPresenter mServerPresenter;
@@ -101,9 +104,32 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     }
 
     @Override
+    public void setServerName(String s) {
+        setStringInEditText(R.id.text_server_name, s);
+    }
+
+    @Override
+    public void setServerUrl(String s) {
+        setStringInEditText(R.id.text_server_url, s);
+    }
+
+    @Override
+    public void setUserName(String s) {
+        setStringInEditText(R.id.text_user_name, s);
+    }
+
+    @Override
+    public void setUserMail(String s) {
+        setStringInEditText(R.id.text_user_mail, s);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
-        mServerPresenter.setView(this);
+
+        Log.d(LOG_TAG, "Calling AsyncTask");
+        GetServerAsyncTask getServer = new GetServerAsyncTask(mServerPresenter, this);
+        getServer.execute();
     }
 
     @Override
@@ -124,5 +150,20 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
         }
 
         return editText.getText().toString();
+    }
+
+    private void setStringInEditText(int viewId, String s) {
+        EditText editText;
+
+        Dialog dialog = getDialog();
+
+        if (dialog != null) {
+            editText = (EditText) dialog.findViewById(viewId);
+        }
+        else {
+            editText = (EditText) getActivity().findViewById(viewId);
+        }
+
+        editText.setText(s);
     }
 }
