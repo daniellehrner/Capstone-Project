@@ -18,6 +18,8 @@ package me.lehrner.newsgroupsndy.view;
 
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +29,11 @@ import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 
 public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdapterViewHolder> {
+    private final String LOG_TAG = this.getClass().getSimpleName();
     private Cursor mCursor;
 
     public class ServerAdapterViewHolder extends RecyclerView.ViewHolder
-            implements View.OnClickListener {
+            implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         public final TextView mServerName;
 
@@ -38,13 +41,23 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
             super(view);
             mServerName = (TextView) view.findViewById(R.id.server_item_name);
             view.setOnClickListener(this);
+            view.setOnCreateContextMenuListener(this);
         }
 
         @Override
         public void onClick(View v) {
+            mCursor.moveToPosition(getAdapterPosition());
+            Log.d(LOG_TAG, "Text: " + mCursor.getString(
+                    mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu menu, View v,
+                                        ContextMenu.ContextMenuInfo menuInfo) {
+
             int adapterPosition = getAdapterPosition();
             mCursor.moveToPosition(adapterPosition);
-
+            Log.d(LOG_TAG, "OnCreateContextMenu: " + adapterPosition);
         }
     }
 
