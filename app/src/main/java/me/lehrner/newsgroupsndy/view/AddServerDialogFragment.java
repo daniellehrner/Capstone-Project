@@ -22,7 +22,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,11 +33,11 @@ import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.view.tasks.GetServerAsyncTask;
+import me.lehrner.newsgroupsndy.view.tasks.SaveServerAsyncTask;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment
                                      implements AddServerView,
                                                 AddServerClickHandler {
-    private final String LOG_TAG = this.getClass().getSimpleName();
     private static final String SERVER_ID = "server_id";
 
     @Inject ServerPresenter mServerPresenter;
@@ -127,13 +126,12 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     public void onResume() {
         super.onResume();
 
-        GetServerAsyncTask getServer = new GetServerAsyncTask(mServerPresenter, this);
-        getServer.execute();
+        (new GetServerAsyncTask(mServerPresenter, this)).execute();
     }
 
     @Override
     public void onServerSave() {
-        mServerPresenter.saveServer();
+        (new SaveServerAsyncTask(mServerPresenter)).execute();
     }
 
     private String getStringFromEditText(int viewId) {

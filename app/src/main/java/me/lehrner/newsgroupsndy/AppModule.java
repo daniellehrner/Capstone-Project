@@ -23,11 +23,9 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
-import me.lehrner.newsgroupsndy.model.ServerDbHelper;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenterImpl;
 import me.lehrner.newsgroupsndy.repository.DatabaseServerRepositoryImpl;
-import me.lehrner.newsgroupsndy.repository.ServerProvider;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 
 @Module
@@ -49,12 +47,6 @@ public class AppModule {
     public ServerRepository provideServerRepository(Context context) {
         return new DatabaseServerRepositoryImpl(context);
     }
-
-//    @Provides
-//    @Singleton
-//    public ServerProvider provideServerProvider(Application application) {
-//        return new ServerProvider(application);
-//    }
 
     @Provides
     public ServerPresenter provideUserPresenter(ServerRepository serverRepository) {

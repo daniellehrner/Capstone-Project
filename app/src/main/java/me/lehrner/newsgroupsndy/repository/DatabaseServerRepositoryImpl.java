@@ -31,7 +31,7 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 public class DatabaseServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private ServerDbHelper mServerDbHelper;
+    private final ServerDbHelper mServerDbHelper;
 
     public DatabaseServerRepositoryImpl(Context context) {
         mServerDbHelper = new ServerDbHelper(context);

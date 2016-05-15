@@ -17,7 +17,6 @@
 package me.lehrner.newsgroupsndy.model;
 
 import android.content.ContentResolver;
-import android.net.Uri;
 import android.provider.BaseColumns;
 
 public final class ServerContract {

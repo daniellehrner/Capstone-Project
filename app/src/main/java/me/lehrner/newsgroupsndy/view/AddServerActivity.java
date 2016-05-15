@@ -31,7 +31,7 @@ import me.lehrner.newsgroupsndy.R;
 public class AddServerActivity extends AppCompatActivity {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    AddServerClickHandler mServerClickHandler;
+    private AddServerClickHandler mServerClickHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

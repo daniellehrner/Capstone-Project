@@ -17,15 +17,13 @@
 package me.lehrner.newsgroupsndy.view.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class GetServerAsyncTask extends AsyncTask<Void, Void, Void> {
-    private final String LOG_TAG = this.getClass().getSimpleName();
-    private ServerPresenter mServerPresenter;
-    private AddServerView mAddServerView;
+    private final ServerPresenter mServerPresenter;
+    private final AddServerView mAddServerView;
 
     public GetServerAsyncTask(ServerPresenter serverPresenter,
                               AddServerView addServerView) {

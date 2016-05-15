@@ -19,7 +19,6 @@ package me.lehrner.newsgroupsndy;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import me.lehrner.newsgroupsndy.repository.ServerProvider;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
 import me.lehrner.newsgroupsndy.view.MainActivity;
 
@@ -28,5 +27,4 @@ import me.lehrner.newsgroupsndy.view.MainActivity;
 public interface AppComponent {
     void inject(AddServerDialogFragment target);
     void inject(MainActivity target);
-//    void inject(ServerProvider target);
 }

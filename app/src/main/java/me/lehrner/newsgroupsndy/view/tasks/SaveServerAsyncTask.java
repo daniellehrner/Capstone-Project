@@ -21,7 +21,7 @@ import android.os.AsyncTask;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 
 public class SaveServerAsyncTask extends AsyncTask<Void, Void, Void> {
-    private ServerPresenter mServerPresenter;
+    private final ServerPresenter mServerPresenter;
 
     public SaveServerAsyncTask(ServerPresenter presenter) {
         mServerPresenter = presenter;
