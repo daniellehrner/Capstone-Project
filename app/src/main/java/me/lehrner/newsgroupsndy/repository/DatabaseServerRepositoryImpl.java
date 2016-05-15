@@ -31,19 +31,18 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 public class DatabaseServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private Context mContext;
+    private ServerDbHelper mServerDbHelper;
 
     public DatabaseServerRepositoryImpl(Context context) {
-        mContext = context;
+        mServerDbHelper = new ServerDbHelper(context);
     }
 
     @Override
     public Server getServer(int id) {
         Server server;
-        id = 1;
         if (id == AddServerView.SERVER_ID_NOT_SET) {
             server = new Server();
-            server.setId(0);
+            server.setId(AddServerView.SERVER_ID_NOT_SET);
             server.setServerName("");
             server.setServerUrl("");
             server.setUserName("");
@@ -60,8 +59,7 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
         Server s = new Server();
         s.setId(id);
 
-        ServerDbHelper serverDbHelper = new ServerDbHelper(mContext);
-        SQLiteDatabase db = serverDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mServerDbHelper.getReadableDatabase();
 
         String[] projection = {
                 ServerEntry.COLUMN_NAME_SERVER_NAME,
@@ -72,7 +70,7 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
         String selection = ServerEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
 
-        Cursor getServerCursor = db.query(
+        Cursor serverCursor = db.query(
                 ServerEntry.TABLE_NAME,
                 projection,
                 selection,
@@ -82,24 +80,32 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
                 null
         );
 
-        getServerCursor.moveToFirst();
-        s.setServerName(getServerCursor.getString(0));
-        s.setServerUrl(getServerCursor.getString(1));
-        s.setUserName(getServerCursor.getString(2));
-        s.setUserMail(getServerCursor.getString(3));
+        serverCursor.moveToFirst();
+        s.setServerName(serverCursor.getString(
+                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
+        s.setServerUrl(serverCursor.getString(
+                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_URL)));
+        s.setUserName(serverCursor.getString(
+                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER)));
+        s.setUserMail(serverCursor.getString(
+                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL)));
 
-        getServerCursor.close();
+        serverCursor.close();
 
         return s;
     }
 
     @Override
     public boolean saveServer(Server s) {
-        ServerDbHelper serverDbHelper = new ServerDbHelper(mContext);
-        SQLiteDatabase db = serverDbHelper.getWritableDatabase();
+        SQLiteDatabase db = mServerDbHelper.getWritableDatabase();
 
         ContentValues values = new ContentValues();
-        values.put(ServerEntry._ID, s.getId());
+
+        // new server column, id will be auto incremented by the database
+        if (s.getId() != AddServerView.SERVER_ID_NOT_SET) {
+            values.put(ServerEntry._ID, s.getId());
+        }
+
         values.put(ServerEntry.COLUMN_NAME_SERVER_NAME, s.getServerName());
         values.put(ServerEntry.COLUMN_NAME_SERVER_URL, s.getServerUrl());
         values.put(ServerEntry.COLUMN_NAME_SERVER_USER, s.getUserName());
@@ -114,5 +120,28 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
         }
 
         return true;
+    }
+
+    @Override
+    public Cursor query(String[] projection, String selection,
+                        String[] selectionArgs, String sortOrder) {
+        return mServerDbHelper.getReadableDatabase().query(
+                ServerEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+    }
+
+    @Override
+    public long insert(ContentValues values) {
+        return mServerDbHelper.getWritableDatabase().insert(
+                ServerEntry.TABLE_NAME,
+                null,
+                values
+        );
     }
 }

@@ -25,6 +25,11 @@
             android:parentActivityName=".view.MainActivity"
             android:label="@string/new_server"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <provider
+            android:authorities="@string/content_authority"
+            android:name=".repository.ServerProvider"
+            android:exported="false" />
     </application>
 
 </manifest>

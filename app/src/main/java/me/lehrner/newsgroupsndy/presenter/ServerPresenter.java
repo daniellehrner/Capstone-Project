@@ -22,4 +22,7 @@ public interface ServerPresenter {
     void saveServer();
     void setView(AddServerView v);
     void loadServerDetails();
+    String[] getLoaderProjection();
+    String getLoaderOrder();
+    String getLoaderUriString();
 }

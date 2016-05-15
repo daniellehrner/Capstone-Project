@@ -18,6 +18,8 @@ package me.lehrner.newsgroupsndy;
 
 import android.app.Application;
 
+import com.squareup.leakcanary.LeakCanary;
+
 public class NDYApplication extends Application {
 
     private AppComponent component;
@@ -28,7 +30,7 @@ public class NDYApplication extends Application {
         super.onCreate();
 
         component = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-
+        LeakCanary.install(this);
     }
 
     public AppComponent getComponent() {

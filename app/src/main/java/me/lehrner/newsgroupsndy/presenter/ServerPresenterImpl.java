@@ -19,11 +19,16 @@ package me.lehrner.newsgroupsndy.presenter;
 import android.util.Log;
 
 import me.lehrner.newsgroupsndy.model.Server;
+import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
+    private static final String[] mServerLoaderProjection = new String[]{
+            ServerEntry.COLUMN_NAME_SERVER_NAME};
+    private static final String mLoaderSortOrder = ServerEntry.COLUMN_NAME_SERVER_NAME + " ASC";
+
 
     private final ServerRepository mServerRepository;
     private AddServerView mAddServerView;
@@ -40,8 +45,7 @@ public class ServerPresenterImpl implements ServerPresenter {
 
         Server server = new Server();
 
-        server.setId(1);
-//        server.setId(mAddServerView.getServerId());
+        server.setId(mAddServerView.getServerId());
         server.setServerName(mAddServerView.getServerName());
         server.setServerUrl(mAddServerView.getServerUrl());
         server.setUserName(mAddServerView.getUserName());
@@ -75,5 +79,25 @@ public class ServerPresenterImpl implements ServerPresenter {
         mAddServerView.setServerUrl(server.getServerUrl());
         mAddServerView.setUserName(server.getUserName());
         mAddServerView.setUserMail(server.getUserMail());
+    }
+
+    @Override
+    public String[] getLoaderProjection() {
+        return mServerLoaderProjection;
+    }
+
+    @Override
+    public String getLoaderOrder() {
+        return mLoaderSortOrder;
+    }
+
+    @Override
+    public String getLoaderUriString() {
+        @SuppressWarnings("StringBufferReplaceableByString")
+        StringBuilder builder = new StringBuilder("content://");
+        builder.append(ServerEntry.CONTENT_AUTHORITY);
+        builder.append("/");
+        builder.append(ServerEntry.TABLE_NAME);
+        return builder.toString();
     }
 }

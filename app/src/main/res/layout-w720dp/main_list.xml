@@ -21,8 +21,7 @@
         android:layout_marginRight="16dp"
         android:layout_weight="1"
         app:layoutManager="LinearLayoutManager"
-        tools:context="me.lehrner.newsgroupsndy.view.MainActivity"
-        tools:listitem="@layout/main_content" />
+        tools:context="me.lehrner.newsgroupsndy.view.MainActivity" />
 
     <FrameLayout
         android:id="@+id/groups_fragment_container"
