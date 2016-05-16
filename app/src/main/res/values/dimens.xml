@@ -3,6 +3,4 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="app_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
-
-    <dimen name="list_item_extra_padding">0dp</dimen>
 </resources>

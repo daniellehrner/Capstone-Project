@@ -25,7 +25,7 @@ import dagger.Module;
 import dagger.Provides;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenterImpl;
-import me.lehrner.newsgroupsndy.repository.DatabaseServerRepositoryImpl;
+import me.lehrner.newsgroupsndy.repository.ContentProviderServerRepositoryImpl;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 
 @Module
@@ -45,7 +45,7 @@ public class AppModule {
     @Provides
     @Singleton
     public ServerRepository provideServerRepository(Context context) {
-        return new DatabaseServerRepositoryImpl(context);
+        return new ContentProviderServerRepositoryImpl(context);
     }
 
     @Provides

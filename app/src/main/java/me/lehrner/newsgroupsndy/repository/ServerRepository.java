@@ -16,15 +16,10 @@
 
 package me.lehrner.newsgroupsndy.repository;
 
-import android.content.ContentValues;
-import android.database.Cursor;
-
 import me.lehrner.newsgroupsndy.model.Server;
 
 public interface ServerRepository {
     Server getServer(int id);
     boolean saveServer(Server s);
-    Cursor query(String[] projection, String selection,
-                 String[] selectionArgs, String sortOrder);
-    long insert(ContentValues values);
+    boolean deleteServer(int id);
 }

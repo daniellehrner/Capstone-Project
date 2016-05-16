@@ -25,9 +25,14 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
+
     private static final String[] mServerLoaderProjection = new String[]{
+            ServerEntry._ID,
             ServerEntry.COLUMN_NAME_SERVER_NAME};
-    private static final String mLoaderSortOrder = ServerEntry.COLUMN_NAME_SERVER_NAME + " ASC";
+
+    // sort case insensitive
+    private static final String mLoaderSortOrder =
+            ServerEntry.COLUMN_NAME_SERVER_NAME + " COLLATE NOCASE";
 
 
     private final ServerRepository mServerRepository;
@@ -74,7 +79,6 @@ public class ServerPresenterImpl implements ServerPresenter {
         int serverId = mAddServerView.getServerId();
         Server server = mServerRepository.getServer(serverId);
 
-        Log.d(LOG_TAG, "Db to View");
         mAddServerView.setServerName(server.getServerName());
         mAddServerView.setServerUrl(server.getServerUrl());
         mAddServerView.setUserName(server.getUserName());
@@ -93,11 +97,11 @@ public class ServerPresenterImpl implements ServerPresenter {
 
     @Override
     public String getLoaderUriString() {
-        @SuppressWarnings("StringBufferReplaceableByString")
-        StringBuilder builder = new StringBuilder("content://");
-        builder.append(ServerEntry.CONTENT_AUTHORITY);
-        builder.append("/");
-        builder.append(ServerEntry.TABLE_NAME);
-        return builder.toString();
+        return ServerEntry.SERVER_URI_STRING;
+    }
+
+    @Override
+    public void deleteServer(int id) {
+        mServerRepository.deleteServer(id);
     }
 }

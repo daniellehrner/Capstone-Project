@@ -19,19 +19,23 @@ package me.lehrner.newsgroupsndy.repository;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import me.lehrner.newsgroupsndy.model.ServerContract;
+import me.lehrner.newsgroupsndy.model.ServerDbHelper;
 
 public class ServerProvider extends ContentProvider {
-    private ServerRepository mServerRepository;
+    private ServerDbHelper mServerDbHelper;
+    private Context mContext;
 
     @Override
     public boolean onCreate() {
-        mServerRepository = new DatabaseServerRepositoryImpl(getContext());
+        mContext = getContext();
+        mServerDbHelper = new ServerDbHelper(mContext);
         return true;
     }
 
@@ -39,7 +43,19 @@ public class ServerProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-        return mServerRepository.query(projection, selection, selectionArgs, sortOrder);
+
+        Cursor cursor = mServerDbHelper.getReadableDatabase().query(
+                ServerContract.ServerEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                sortOrder
+        );
+
+        cursor.setNotificationUri(mContext.getContentResolver(), uri);
+        return cursor;
     }
 
     @Nullable
@@ -51,17 +67,49 @@ public class ServerProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        long id = mServerRepository.insert(values);
-        return ContentUris.withAppendedId(uri, id);
+        long id = mServerDbHelper.getWritableDatabase().insert(
+                ServerContract.ServerEntry.TABLE_NAME,
+                null,
+                values);
+
+        Uri newRowUri = null;
+
+        // if insert was successful
+        if (id != -1) {
+            newRowUri = ContentUris.withAppendedId(uri, id);
+            mContext.getContentResolver().notifyChange(newRowUri, null);
+        }
+
+        return newRowUri;
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+        int numberOfDeletedRows = mServerDbHelper.getWritableDatabase().delete(
+                ServerContract.ServerEntry.TABLE_NAME,
+                selection,
+                selectionArgs);
+
+        if (numberOfDeletedRows > 0) {
+            mContext.getContentResolver().notifyChange(uri, null);
+        }
+
+        return numberOfDeletedRows;
     }
 
     @Override
-    public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-        return 0;
+    public int update(@NonNull Uri uri, ContentValues values, String whereClause, String[] whereArgs) {
+        int numberOfUpdatedRows = mServerDbHelper.getWritableDatabase().update(
+                ServerContract.ServerEntry.TABLE_NAME,
+                values,
+                whereClause,
+                whereArgs
+        );
+
+        if (numberOfUpdatedRows > 0) {
+            mContext.getContentResolver().notifyChange(uri, null);
+        }
+
+        return numberOfUpdatedRows;
     }
 }

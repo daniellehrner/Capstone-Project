@@ -37,10 +37,6 @@ public class ServerDbHelper extends SQLiteOpenHelper {
                     ServerEntry.COLUMN_NAME_SERVER_MAIL + TEXT_TYPE +
             " )";
 
-    private static final String SQL_TEST_SERVER = "INSERT OR IGNORE INTO " +
-            ServerEntry.TABLE_NAME +
-            " VALUES (1, 'DB Server', 'db.server.com', 'DB User', 'DB Mail')";
-
     private static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + ServerEntry.TABLE_NAME;
 
@@ -51,7 +47,6 @@ public class ServerDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_SERVERS);
-        db.execSQL(SQL_TEST_SERVER);
     }
 
     @Override

@@ -28,10 +28,13 @@ public final class ServerContract {
         public static final String TABLE_NAME = "server";
         public static final String CONTENT_TYPE =
                 ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
-
         public static final String COLUMN_NAME_SERVER_NAME = "serverName";
         public static final String COLUMN_NAME_SERVER_URL = "serverUrl";
         public static final String COLUMN_NAME_SERVER_USER = "userName";
         public static final String COLUMN_NAME_SERVER_MAIL = "userMail";
+
+        public static final String SERVER_URI_STRING = "content://"
+                + CONTENT_AUTHORITY +
+                "/" + TABLE_NAME;
     }
 }

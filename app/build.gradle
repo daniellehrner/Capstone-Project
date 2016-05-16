@@ -1,7 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
-// shows app method count on assembleDebug
-apply plugin: 'com.getkeepsafe.dexcount'
 
 android {
     compileSdkVersion 23

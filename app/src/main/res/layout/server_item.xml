@@ -1,26 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/server_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/touch_selector"
-    android:paddingLeft="@dimen/list_item_extra_padding"
-    android:paddingRight="@dimen/list_item_extra_padding"
-    >
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:background="@drawable/touch_selector">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/server_item_name"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="?android:attr/listPreferredItemHeight"
-        android:paddingLeft="@dimen/abc_list_item_padding_horizontal_material"
-        android:paddingRight="@dimen/abc_list_item_padding_horizontal_material"
-        android:orientation="horizontal">
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
+        android:layout_toStartOf="@+id/server_item_menu"
+        android:layout_marginStart="@dimen/app_margin"/>
 
-        <TextView
-            android:id="@+id/server_item_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"/>
+    <ImageButton
+        android:id="@+id/server_item_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/menu"
+        android:src="@drawable/ic_more_vert_black_24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="@dimen/app_margin" />
 
-    </LinearLayout>
-</FrameLayout>
+</RelativeLayout>

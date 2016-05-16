@@ -41,7 +41,8 @@ import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 
-public class MainActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+public class MainActivity extends AppCompatActivity
+        implements LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final int SERVER_LOADER = 0;
     private final String LOG_TAG = this.getClass().getSimpleName();
@@ -118,7 +119,6 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
     @Override
     public void onAttachFragment(Fragment fragment) {
-        Log.d(LOG_TAG, "Attach fragment");
         try {
             mServerClickHandler = (AddServerClickHandler) fragment;
         }
@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 return new CursorLoader(
                         this,                                   // Parent activity context
-                        serverUri,                     // Table to query
+                        serverUri,                              // Table to query
                         mServerPresenter.getLoaderProjection(), // Projection to return
                         null,                                   // No selection clause
                         null,                                   // No selection arguments

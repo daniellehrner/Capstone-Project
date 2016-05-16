@@ -28,10 +28,12 @@ import android.view.MenuItem;
 
 import me.lehrner.newsgroupsndy.R;
 
-public class AddServerActivity extends AppCompatActivity {
+public class AddServerActivity extends AppCompatActivity implements GetServerId {
     private final String LOG_TAG = this.getClass().getSimpleName();
+    public static final String SERVER_ID_KEY = "serverIdKey";
 
     private AddServerClickHandler mServerClickHandler;
+    private int mServerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +46,13 @@ public class AddServerActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
+        }
+
+        if (savedInstanceState == null) {
+            mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
+        }
+        else {
+            mServerId = savedInstanceState.getInt(SERVER_ID_KEY);
         }
     }
 
@@ -69,12 +78,23 @@ public class AddServerActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onAttachFragment (Fragment fragment) {
+    public void onAttachFragment(Fragment fragment) {
         try {
             mServerClickHandler = (AddServerClickHandler) fragment;
         }
         catch (ClassCastException e) {
             Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SERVER_ID_KEY, mServerId);
+    }
+
+    @Override
+    public int getServerId() {
+        return mServerId;
     }
 }

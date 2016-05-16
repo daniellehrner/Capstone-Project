@@ -18,10 +18,12 @@ package me.lehrner.newsgroupsndy.view;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,9 +40,12 @@ import me.lehrner.newsgroupsndy.view.tasks.SaveServerAsyncTask;
 public class AddServerDialogFragment extends AppCompatDialogFragment
                                      implements AddServerView,
                                                 AddServerClickHandler {
+
+    private final String LOG_TAG = this.getClass().getSimpleName();
     private static final String SERVER_ID = "server_id";
 
     @Inject ServerPresenter mServerPresenter;
+    GetServerId mGetServerId;
 
     public AddServerDialogFragment() {
         // Required empty public constructor
@@ -77,9 +82,7 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
 
     @Override
     public int getServerId() {
-        return getArguments() == null ?
-                AddServerView.SERVER_ID_NOT_SET :
-                getArguments().getInt(SERVER_ID, 0);
+        return mGetServerId.getServerId();
     }
 
     @Override
@@ -166,5 +169,17 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
                 editText.setText(s);
             }
         });
+    }
+
+    @Override
+    public void onAttach (Context context) {
+        super.onAttach(context);
+
+        try {
+            mGetServerId = (GetServerId) context;
+        }
+        catch (ClassCastException e) {
+            Log.e(LOG_TAG, "Context doesn't implement GetServerId: " + e.toString());
+        }
     }
 }

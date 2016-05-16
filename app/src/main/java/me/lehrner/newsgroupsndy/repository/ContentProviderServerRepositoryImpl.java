@@ -19,22 +19,19 @@ package me.lehrner.newsgroupsndy.repository;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
-import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
+import android.net.Uri;
 
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
-import me.lehrner.newsgroupsndy.model.ServerDbHelper;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
-public class DatabaseServerRepositoryImpl implements ServerRepository {
+public class ContentProviderServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private final ServerDbHelper mServerDbHelper;
+    private Context mContext;
 
-    public DatabaseServerRepositoryImpl(Context context) {
-        mServerDbHelper = new ServerDbHelper(context);
+    public ContentProviderServerRepositoryImpl(Context context) {
+        mContext = context;
     }
 
     @Override
@@ -49,17 +46,15 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
             server.setUserMail("");
         }
         else {
-            server = getServerFromDb(id);
+            server = getServerFromContentProvider(id);
         }
 
         return server;
     }
 
-    private Server getServerFromDb(int id) {
+    private Server getServerFromContentProvider(int id) {
         Server s = new Server();
         s.setId(id);
-
-        SQLiteDatabase db = mServerDbHelper.getReadableDatabase();
 
         String[] projection = {
                 ServerEntry.COLUMN_NAME_SERVER_NAME,
@@ -70,78 +65,74 @@ public class DatabaseServerRepositoryImpl implements ServerRepository {
         String selection = ServerEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
 
-        Cursor serverCursor = db.query(
-                ServerEntry.TABLE_NAME,
+        Cursor serverCursor = mContext.getContentResolver().query(
+                Uri.parse(ServerEntry.SERVER_URI_STRING),
                 projection,
                 selection,
                 selectionArgs,
-                null,
-                null,
                 null
         );
 
-        serverCursor.moveToFirst();
-        s.setServerName(serverCursor.getString(
-                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
-        s.setServerUrl(serverCursor.getString(
-                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_URL)));
-        s.setUserName(serverCursor.getString(
-                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER)));
-        s.setUserMail(serverCursor.getString(
-                serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL)));
+        if (serverCursor != null) {
+            serverCursor.moveToFirst();
+            s.setServerName(serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
+            s.setServerUrl(serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_URL)));
+            s.setUserName(serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER)));
+            s.setUserMail(serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL)));
 
-        serverCursor.close();
+            serverCursor.close();
+        }
 
         return s;
     }
 
     @Override
     public boolean saveServer(Server s) {
-        SQLiteDatabase db = mServerDbHelper.getWritableDatabase();
+        boolean saveSuccess;
 
         ContentValues values = new ContentValues();
-
-        // new server column, id will be auto incremented by the database
-        if (s.getId() != AddServerView.SERVER_ID_NOT_SET) {
-            values.put(ServerEntry._ID, s.getId());
-        }
 
         values.put(ServerEntry.COLUMN_NAME_SERVER_NAME, s.getServerName());
         values.put(ServerEntry.COLUMN_NAME_SERVER_URL, s.getServerUrl());
         values.put(ServerEntry.COLUMN_NAME_SERVER_USER, s.getUserName());
         values.put(ServerEntry.COLUMN_NAME_SERVER_MAIL, s.getUserMail());
 
-        try {
-            db.replaceOrThrow(ServerEntry.TABLE_NAME, null, values);
+        // // create new server entry, _ID will be auto incremented by the database
+        if (s.getId() == AddServerView.SERVER_ID_NOT_SET) {
+            Uri newRowUri = mContext.getContentResolver().insert(
+                    Uri.parse(ServerEntry.SERVER_URI_STRING),
+                    values);
+
+            saveSuccess = newRowUri != null;
+
         }
-        catch (SQLException e) {
-            Log.e(LOG_TAG, "Inserting row not successful: " + e.toString());
-            return false;
+        // update existing server entry
+        else {
+            int numberOfUpdatedRows = mContext.getContentResolver().update(
+                    Uri.parse(ServerEntry.SERVER_URI_STRING),
+                    values,
+                    ServerEntry._ID + " = ?",
+                    new String[]{String.valueOf(s.getId())}
+            );
+
+            saveSuccess = numberOfUpdatedRows != 0;
         }
 
-        return true;
+        return saveSuccess;
     }
 
     @Override
-    public Cursor query(String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
-        return mServerDbHelper.getReadableDatabase().query(
-                ServerEntry.TABLE_NAME,
-                projection,
-                selection,
-                selectionArgs,
-                null,
-                null,
-                sortOrder
+    public boolean deleteServer(int id) {
+        int numberOfDeletedRows = mContext.getContentResolver().delete(
+                Uri.parse(ServerEntry.SERVER_URI_STRING),
+                ServerEntry._ID + " = ?",
+                new String[]{String.valueOf(id)}
         );
-    }
 
-    @Override
-    public long insert(ContentValues values) {
-        return mServerDbHelper.getWritableDatabase().insert(
-                ServerEntry.TABLE_NAME,
-                null,
-                values
-        );
+        return numberOfDeletedRows != 0;
     }
 }
