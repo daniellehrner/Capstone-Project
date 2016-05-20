@@ -17,6 +17,9 @@
 package me.lehrner.newsgroupsndy.presenter;
 
 import android.util.Log;
+import android.util.Patterns;
+
+import java.util.regex.Matcher;
 
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
@@ -56,12 +59,28 @@ public class ServerPresenterImpl implements ServerPresenter {
         server.setUserName(mAddServerView.getUserName());
         server.setUserMail(mAddServerView.getUserMail());
 
+        if (!isValidUrl(server.getServerUrl())) {
+            Log.d(LOG_TAG, "URL is not valid");
+            mAddServerView.showUrlIsInvalid();
+            return;
+        }
+
+        Log.d(LOG_TAG, "URL is valid");
+
+
         if (mServerRepository.saveServer(server)) {
             Log.d(LOG_TAG, "Save success");
+            mAddServerView.closeAddServerView();
         }
         else {
             Log.d(LOG_TAG, "Save error");
         }
+    }
+
+    private boolean isValidUrl(String url) {
+        Matcher urlMatcher = Patterns.WEB_URL.matcher(url);
+
+        return urlMatcher.matches();
     }
 
     @Override

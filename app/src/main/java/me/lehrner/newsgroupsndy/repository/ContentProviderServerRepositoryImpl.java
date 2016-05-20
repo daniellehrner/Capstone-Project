@@ -28,7 +28,7 @@ import me.lehrner.newsgroupsndy.view.AddServerView;
 public class ContentProviderServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
-    private Context mContext;
+    private final Context mContext;
 
     public ContentProviderServerRepositoryImpl(Context context) {
         mContext = context;
@@ -73,7 +73,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
                 null
         );
 
-        if (serverCursor != null) {
+        if (serverCursor != null && serverCursor.getCount() > 0) {
             serverCursor.moveToFirst();
             s.setServerName(serverCursor.getString(
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));

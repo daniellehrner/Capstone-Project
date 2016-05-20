@@ -42,7 +42,7 @@ import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 
 public class MainActivity extends AppCompatActivity
-        implements LoaderManager.LoaderCallbacks<Cursor> {
+        implements LoaderManager.LoaderCallbacks<Cursor>, ListViewClickListener, GetServerId {
 
     private static final int SERVER_LOADER = 0;
     private final String LOG_TAG = this.getClass().getSimpleName();
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
     private ServerAdapter mServerAdapter;
 
     private boolean mTwoPane = false;
+    private int mItemId = AddServerView.SERVER_ID_NOT_SET;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,11 +85,10 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("unused")
     @OnClick(R.id.fab)
     public void onFabClick(View view) {
-        FragmentManager fm = getSupportFragmentManager();
-        AddServerDialogFragment addServerDialogFragment = AddServerDialogFragment.newInstance();
-
         if (mTwoPane) {
-            addServerDialogFragment.show(fm, ADD_SERVER_DIALOG_TAG);
+            FragmentManager fm = getSupportFragmentManager();
+            AddServerDialogFragment.newInstance().show(fm, ADD_SERVER_DIALOG_TAG);
+            mItemId = AddServerView.SERVER_ID_NOT_SET;
         }
         else {
 //            FragmentTransaction transaction = fm.beginTransaction();
@@ -156,5 +156,25 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mServerAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onListViewEditClick(int itemId) {
+        mItemId = itemId;
+
+        if (mTwoPane) {
+            FragmentManager fm = getSupportFragmentManager();
+            AddServerDialogFragment.newInstance().show(fm, ADD_SERVER_DIALOG_TAG);
+        }
+        else {
+            Intent editServerIntent = new Intent(this, AddServerActivity.class);
+            editServerIntent.putExtra(AddServerActivity.SERVER_ID_KEY, mItemId);
+            startActivity(editServerIntent);
+        }
+    }
+
+    @Override
+    public int getServerId() {
+        return mItemId;
     }
 }

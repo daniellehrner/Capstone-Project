@@ -16,8 +16,6 @@
 
 package me.lehrner.newsgroupsndy.view;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.database.Cursor;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -45,7 +43,8 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
 
         public final TextView mServerName;
         public final ImageButton mServerMenu;
-        private final Activity mActivity;
+        private final ListViewClickListener mListViewClickListener;
+
         @Inject ServerPresenter mServerPresenter;
 
         public ServerAdapterViewHolder(View view) {
@@ -53,7 +52,7 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
             MainActivity mainActivity = (MainActivity) view.getContext();
             ((NDYApplication) mainActivity.getApplication()).getComponent().inject(this);
 
-            mActivity = mainActivity;
+            mListViewClickListener = mainActivity;
             mServerName = (TextView) view.findViewById(R.id.server_item_name);
             mServerMenu  = (ImageButton) view.findViewById(R.id.server_item_menu);
 
@@ -86,11 +85,7 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
             switch (item.getItemId()) {
                 case R.id.server_menu_edit:
                     Log.d(LOG_TAG, "Edit: " + id);
-
-                    Intent editServerIntent = new Intent(mActivity, AddServerActivity.class);
-                    editServerIntent.putExtra(AddServerActivity.SERVER_ID_KEY, id);
-                    mActivity.startActivity(editServerIntent);
-
+                    mListViewClickListener.onListViewEditClick(id);
                     break;
                 case R.id.server_menu_delete:
                     mServerPresenter.deleteServer(id);

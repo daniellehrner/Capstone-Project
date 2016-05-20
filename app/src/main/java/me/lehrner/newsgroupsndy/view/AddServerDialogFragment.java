@@ -21,6 +21,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.util.Log;
@@ -28,6 +29,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import javax.inject.Inject;
 
@@ -123,6 +125,30 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     @Override
     public void setUserMail(String s) {
         setStringInEditText(R.id.text_user_mail, s);
+    }
+
+    @Override
+    public void showUrlIsInvalid() {
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                Toast toast = Toast.makeText(getContext(),
+                        getString(R.string.url_invalid), Toast.LENGTH_LONG);
+                toast.show();
+            }
+        });
+
+    }
+
+    @Override
+    public void closeAddServerView() {
+        Dialog dialog = getDialog();
+
+        if (dialog != null) {
+            dialog.cancel();
+        }
+        else {
+            NavUtils.navigateUpFromSameTask(getActivity());
+        }
     }
 
     @Override
