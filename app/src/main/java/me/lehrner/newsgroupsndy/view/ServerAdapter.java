@@ -41,13 +41,13 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
     public class ServerAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
 
-        public final TextView mServerName;
-        public final ImageButton mServerMenu;
+        final TextView mServerName;
+        final ImageButton mServerMenu;
         private final ListViewClickListener mListViewClickListener;
 
         @Inject ServerPresenter mServerPresenter;
 
-        public ServerAdapterViewHolder(View view) {
+        ServerAdapterViewHolder(View view) {
             super(view);
             MainActivity mainActivity = (MainActivity) view.getContext();
             ((NDYApplication) mainActivity.getApplication()).getComponent().inject(this);
@@ -67,6 +67,9 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
                 case R.id.server_item:
                     Log.d(LOG_TAG, "Text: " + mCursor.getString(
                             mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
+                    mListViewClickListener.onListViewClick(
+                            mCursor.getInt(
+                            mCursor.getColumnIndex(ServerEntry._ID)));
                     break;
                 case R.id.server_item_menu:
                     Log.d(LOG_TAG, "Menu click");
@@ -128,7 +131,7 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
         return mCursor.getCount();
     }
 
-    public void swapCursor(Cursor newCursor) {
+    void swapCursor(Cursor newCursor) {
         mCursor = newCursor;
         notifyDataSetChanged();
     }

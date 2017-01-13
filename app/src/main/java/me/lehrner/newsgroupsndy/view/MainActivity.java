@@ -26,7 +26,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -76,8 +75,6 @@ public class MainActivity extends AppCompatActivity
 
         mServerListView.setHasFixedSize(true);
 
-        mServerListView.setLayoutManager(new LinearLayoutManager(this));
-
         mServerAdapter = new ServerAdapter();
         mServerListView.setAdapter(mServerAdapter);
     }
@@ -91,13 +88,6 @@ public class MainActivity extends AppCompatActivity
             mItemId = AddServerView.SERVER_ID_NOT_SET;
         }
         else {
-//            FragmentTransaction transaction = fm.beginTransaction();
-//            transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-//            transaction.add(R.id.add_server_placeholder,
-//                            addServerDialogFragment,
-//                            PLAYER_FRAGMENT_TAG)
-//                    .addToBackStack(null)
-//                    .commit();
             startActivity(new Intent(this, AddServerActivity.class));
         }
     }
@@ -156,6 +146,20 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         mServerAdapter.swapCursor(null);
+    }
+
+    @Override
+    public void onListViewClick(int itemId) {
+        mItemId = itemId;
+
+        if (mTwoPane) {
+
+        }
+        else {
+            Intent editServerIntent = new Intent(this, AddServerActivity.class);
+            editServerIntent.putExtra(AddServerActivity.SERVER_ID_KEY, mItemId);
+            startActivity(editServerIntent);
+        }
     }
 
     @Override

@@ -21,8 +21,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
+import me.lehrner.newsgroupsndy.model.User;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class ContentProviderServerRepositoryImpl implements ServerRepository {
@@ -38,12 +42,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
     public Server getServer(int id) {
         Server server;
         if (id == AddServerView.SERVER_ID_NOT_SET) {
-            server = new Server();
-            server.setId(AddServerView.SERVER_ID_NOT_SET);
-            server.setServerName("");
-            server.setServerUrl("");
-            server.setUserName("");
-            server.setUserMail("");
+            server = null;
         }
         else {
             server = getServerFromContentProvider(id);
@@ -53,8 +52,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
     }
 
     private Server getServerFromContentProvider(int id) {
-        Server s = new Server();
-        s.setId(id);
+        Server server = null;
 
         String[] projection = {
                 ServerEntry.COLUMN_NAME_SERVER_NAME,
@@ -75,19 +73,23 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
 
         if (serverCursor != null && serverCursor.getCount() > 0) {
             serverCursor.moveToFirst();
-            s.setServerName(serverCursor.getString(
-                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
-            s.setServerUrl(serverCursor.getString(
-                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_URL)));
-            s.setUserName(serverCursor.getString(
-                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER)));
-            s.setUserMail(serverCursor.getString(
-                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL)));
+            String serverName = serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME));
+            String url = serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_URL));
+            String userName = serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER));
+            String userMail = serverCursor.getString(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL));
+
+            User user = new User(userName, userMail);
 
             serverCursor.close();
+
+            server = new Server(id, serverName, url, user);
         }
 
-        return s;
+        return server;
     }
 
     @Override
@@ -98,10 +100,10 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
 
         values.put(ServerEntry.COLUMN_NAME_SERVER_NAME, s.getServerName());
         values.put(ServerEntry.COLUMN_NAME_SERVER_URL, s.getServerUrl());
-        values.put(ServerEntry.COLUMN_NAME_SERVER_USER, s.getUserName());
-        values.put(ServerEntry.COLUMN_NAME_SERVER_MAIL, s.getUserMail());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_USER, s.getUser().getUserName());
+        values.put(ServerEntry.COLUMN_NAME_SERVER_MAIL, s.getUser().getUserMail());
 
-        // // create new server entry, _ID will be auto incremented by the database
+        // create new server entry, _ID will be auto incremented by the database
         if (s.getId() == AddServerView.SERVER_ID_NOT_SET) {
             Uri newRowUri = mContext.getContentResolver().insert(
                     Uri.parse(ServerEntry.SERVER_URI_STRING),

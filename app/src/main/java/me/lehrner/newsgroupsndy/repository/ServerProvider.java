@@ -26,16 +26,16 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import me.lehrner.newsgroupsndy.model.ServerContract;
-import me.lehrner.newsgroupsndy.model.ServerDbHelper;
+import me.lehrner.newsgroupsndy.model.DbHelper;
 
 public class ServerProvider extends ContentProvider {
-    private ServerDbHelper mServerDbHelper;
+    private DbHelper mDbHelper;
     private Context mContext;
 
     @Override
     public boolean onCreate() {
         mContext = getContext();
-        mServerDbHelper = new ServerDbHelper(mContext);
+        mDbHelper = new DbHelper(mContext);
         return true;
     }
 
@@ -44,7 +44,7 @@ public class ServerProvider extends ContentProvider {
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
 
-        Cursor cursor = mServerDbHelper.getReadableDatabase().query(
+        Cursor cursor = mDbHelper.getReadableDatabase().query(
                 ServerContract.ServerEntry.TABLE_NAME,
                 projection,
                 selection,
@@ -67,7 +67,7 @@ public class ServerProvider extends ContentProvider {
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        long id = mServerDbHelper.getWritableDatabase().insert(
+        long id = mDbHelper.getWritableDatabase().insert(
                 ServerContract.ServerEntry.TABLE_NAME,
                 null,
                 values);
@@ -85,7 +85,7 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-        int numberOfDeletedRows = mServerDbHelper.getWritableDatabase().delete(
+        int numberOfDeletedRows = mDbHelper.getWritableDatabase().delete(
                 ServerContract.ServerEntry.TABLE_NAME,
                 selection,
                 selectionArgs);
@@ -99,7 +99,7 @@ public class ServerProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String whereClause, String[] whereArgs) {
-        int numberOfUpdatedRows = mServerDbHelper.getWritableDatabase().update(
+        int numberOfUpdatedRows = mDbHelper.getWritableDatabase().update(
                 ServerContract.ServerEntry.TABLE_NAME,
                 values,
                 whereClause,

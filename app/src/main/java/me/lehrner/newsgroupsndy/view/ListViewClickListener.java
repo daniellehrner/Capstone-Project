@@ -16,6 +16,7 @@
 
 package me.lehrner.newsgroupsndy.view;
 
-public interface ListViewClickListener {
+interface ListViewClickListener {
+    void onListViewClick(int itemId);
     void onListViewEditClick(int itemId);
 }

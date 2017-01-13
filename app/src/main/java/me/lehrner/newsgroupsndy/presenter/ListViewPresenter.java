@@ -18,9 +18,9 @@ package me.lehrner.newsgroupsndy.presenter;
 
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
-public interface ServerPresenter extends ListViewPresenter {
-    void saveServer();
-    void loadServerDetails();
-    void deleteServer(int id);
-    void setView(AddServerView v);
+interface ListViewPresenter {
+    String[] getLoaderProjection();
+    String getLoaderOrder();
+    String getLoaderUriString();
+
 }

@@ -23,26 +23,24 @@ import java.util.regex.Matcher;
 
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
+import me.lehrner.newsgroupsndy.model.ServerFactory;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
-public class ServerPresenterImpl implements ServerPresenter {
+public class ServerPresenterImpl extends ListViewPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
-
-    private static final String[] mServerLoaderProjection = new String[]{
-            ServerEntry._ID,
-            ServerEntry.COLUMN_NAME_SERVER_NAME};
-
-    // sort case insensitive
-    private static final String mLoaderSortOrder =
-            ServerEntry.COLUMN_NAME_SERVER_NAME + " COLLATE NOCASE";
-
 
     private final ServerRepository mServerRepository;
     private AddServerView mAddServerView;
 
     public ServerPresenterImpl(ServerRepository serverRepository) {
         mServerRepository = serverRepository;
+        mLoaderUriString = ServerEntry.SERVER_URI_STRING;
+        mLoaderProjection = new String[]{
+                ServerEntry._ID,
+                ServerEntry.COLUMN_NAME_SERVER_NAME};
+        // sort case insensitive
+        mLoaderSortOrder = ServerEntry.COLUMN_NAME_SERVER_NAME + " COLLATE NOCASE";
     }
 
     @Override
@@ -51,29 +49,28 @@ public class ServerPresenterImpl implements ServerPresenter {
             return;
         }
 
-        Server server = new Server();
+        String serverUrl = mAddServerView.getServerUrl();
 
-        server.setId(mAddServerView.getServerId());
-        server.setServerName(mAddServerView.getServerName());
-        server.setServerUrl(mAddServerView.getServerUrl());
-        server.setUserName(mAddServerView.getUserName());
-        server.setUserMail(mAddServerView.getUserMail());
-
-        if (!isValidUrl(server.getServerUrl())) {
-            Log.d(LOG_TAG, "URL is not valid");
+        if (!isValidUrl(serverUrl)) {
+            Log.e(LOG_TAG, "URL is not valid");
             mAddServerView.showUrlIsInvalid();
             return;
         }
 
-        Log.d(LOG_TAG, "URL is valid");
-
+        Server server = ServerFactory.create().
+                withId(mAddServerView.getServerId()).
+                withServerName(mAddServerView.getServerName()).
+                withServerUrl(mAddServerView.getServerUrl()).
+                withUserName(mAddServerView.getUserName()).
+                withUserMail(mAddServerView.getUserMail()).
+                build();
 
         if (mServerRepository.saveServer(server)) {
             Log.d(LOG_TAG, "Save success");
             mAddServerView.closeAddServerView();
         }
         else {
-            Log.d(LOG_TAG, "Save error");
+            Log.e(LOG_TAG, "Save error");
         }
     }
 
@@ -98,25 +95,12 @@ public class ServerPresenterImpl implements ServerPresenter {
         int serverId = mAddServerView.getServerId();
         Server server = mServerRepository.getServer(serverId);
 
-        mAddServerView.setServerName(server.getServerName());
-        mAddServerView.setServerUrl(server.getServerUrl());
-        mAddServerView.setUserName(server.getUserName());
-        mAddServerView.setUserMail(server.getUserMail());
-    }
-
-    @Override
-    public String[] getLoaderProjection() {
-        return mServerLoaderProjection;
-    }
-
-    @Override
-    public String getLoaderOrder() {
-        return mLoaderSortOrder;
-    }
-
-    @Override
-    public String getLoaderUriString() {
-        return ServerEntry.SERVER_URI_STRING;
+        if (serverId != AddServerView.SERVER_ID_NOT_SET) {
+            mAddServerView.setServerName(server.getServerName());
+            mAddServerView.setServerUrl(server.getServerUrl());
+            mAddServerView.setUserName(server.getUserName());
+            mAddServerView.setUserMail(server.getUserMail());
+        }
     }
 
     @Override

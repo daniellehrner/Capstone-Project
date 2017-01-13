@@ -16,11 +16,9 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
-import me.lehrner.newsgroupsndy.view.AddServerView;
-
-public interface ServerPresenter extends ListViewPresenter {
-    void saveServer();
-    void loadServerDetails();
-    void deleteServer(int id);
-    void setView(AddServerView v);
+interface GroupPresenter extends ListViewPresenter {
+    void subscribeToGroup();
+    void loadGroupDetails();
+    void unsubscribeFromGroup(int id);
+    void setView();
 }

@@ -21,13 +21,16 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
+import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 
-public class ServerDbHelper extends SQLiteOpenHelper {
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "Server.db";
+public class DbHelper extends SQLiteOpenHelper {
+    private static final int DATABASE_VERSION = 2;
+    private static final String DATABASE_NAME = "Server.db";
 
     private static final String TEXT_TYPE = " TEXT";
+    private static final String INT_TYPE = " INTEGER";
     private static final String COMMA_SEP = ",";
+
     private static final String SQL_CREATE_SERVERS =
             "CREATE TABLE " + ServerEntry.TABLE_NAME + " (" +
                     ServerEntry._ID + " INTEGER PRIMARY KEY," +
@@ -37,21 +40,33 @@ public class ServerDbHelper extends SQLiteOpenHelper {
                     ServerEntry.COLUMN_NAME_SERVER_MAIL + TEXT_TYPE +
             " )";
 
-    private static final String SQL_DELETE_ENTRIES =
+    private static final String SQL_CREATE_GROUPS =
+            "CREATE TABLE " + GroupEntry.TABLE_NAME + " (" +
+                    GroupEntry._ID + " INTEGER PRIMARY KEY," +
+                    GroupEntry.COLUMN_NAME_GROUP_NAME + TEXT_TYPE + COMMA_SEP +
+                    GroupEntry.COLUMN_NAME_SERVER_ID + INT_TYPE +
+            " )";
+
+    private static final String SQL_DELETE_SERVER =
             "DROP TABLE IF EXISTS " + ServerEntry.TABLE_NAME;
 
-    public ServerDbHelper(Context context) {
+    private static final String SQL_DELETE_GROUP =
+            "DROP TABLE IF EXISTS " + GroupEntry.TABLE_NAME;
+
+    public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_SERVERS);
+        db.execSQL(SQL_CREATE_GROUPS);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
+        db.execSQL(SQL_DELETE_SERVER);
+        db.execSQL(SQL_DELETE_GROUP);
         onCreate(db);
     }
 }

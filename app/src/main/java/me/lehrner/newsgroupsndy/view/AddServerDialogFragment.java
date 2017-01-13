@@ -44,10 +44,10 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
                                                 AddServerClickHandler {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
-    private static final String SERVER_ID = "server_id";
 
     @Inject ServerPresenter mServerPresenter;
     GetServerId mGetServerId;
+    View mView;
 
     public AddServerDialogFragment() {
         // Required empty public constructor
@@ -62,7 +62,8 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
                              Bundle savedInstanceState) {
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        return inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
+        mView = inflater.inflate(R.layout.fragment_add_server_dialog, container, false);
+        return mView;
     }
 
     @SuppressLint("InflateParams")
@@ -131,12 +132,10 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     public void showUrlIsInvalid() {
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
-                Toast toast = Toast.makeText(getContext(),
-                        getString(R.string.url_invalid), Toast.LENGTH_LONG);
-                toast.show();
+                EditText serveUrlText = (EditText) mView.findViewById(R.id.text_server_url);
+                serveUrlText.setError(getString(R.string.url_invalid));
             }
         });
-
     }
 
     @Override

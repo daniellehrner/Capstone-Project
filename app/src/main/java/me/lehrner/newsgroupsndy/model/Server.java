@@ -16,54 +16,41 @@
 
 package me.lehrner.newsgroupsndy.model;
 
-public class Server {
-    private int mId;
-    private String mServerName;
-    private String mServerUrl;
-    private String mUserName;
-    private String mUserMail;
+public final class Server {
+    private final int mId;
+    private final String mServerName;
+    private final String mServerUrl;
+    private final User mUser;
 
-    public Server() {
-        // empty constructor
+    public Server(int id, String serverName, String serverUrl, User user) {
+        mId = id;
+        mServerName = serverName;
+        mServerUrl = serverUrl;
+        mUser = user;
     }
 
     public int getId() {
         return mId;
     }
 
-    public void setId(int mId) {
-        this.mId = mId;
-    }
-
     public String getServerName() {
         return mServerName;
-    }
-
-    public void setServerName(String mServerName) {
-        this.mServerName = mServerName;
     }
 
     public String getServerUrl() {
         return mServerUrl;
     }
 
-    public void setServerUrl(String mServerUrl) {
-        this.mServerUrl = mServerUrl;
+    public User getUser() {
+        return mUser;
     }
 
     public String getUserName() {
-        return mUserName;
-    }
-
-    public void setUserName(String mUserName) {
-        this.mUserName = mUserName;
+        return mUser.getUserName();
     }
 
     public String getUserMail() {
-        return mUserMail;
+        return mUser.getUserMail();
     }
 
-    public void setUserMail(String mUserMail) {
-        this.mUserMail = mUserMail;
-    }
 }
