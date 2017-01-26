@@ -21,12 +21,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
-import me.lehrner.newsgroupsndy.model.User;
+import me.lehrner.newsgroupsndy.model.ServerFactory;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
 public class ContentProviderServerRepositoryImpl implements ServerRepository {
@@ -81,12 +78,16 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER));
             String userMail = serverCursor.getString(
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL));
-
-            User user = new User(userName, userMail);
-
+            
             serverCursor.close();
 
-            server = new Server(id, serverName, url, user);
+            server = ServerFactory.create().
+                withId(id).
+                withServerName(serverName).
+                withServerUrl(url).
+                withUserName(userName).
+                withUserMail(userMail).
+                build();
         }
 
         return server;

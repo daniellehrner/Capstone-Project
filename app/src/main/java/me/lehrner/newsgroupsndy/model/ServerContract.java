@@ -16,7 +16,6 @@
 
 package me.lehrner.newsgroupsndy.model;
 
-import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
 public final class ServerContract {
@@ -24,17 +23,14 @@ public final class ServerContract {
     }
 
     public static abstract class ServerEntry implements BaseColumns {
-        public static final String CONTENT_AUTHORITY = "me.lehrner.newsgroupsndy";
         public static final String TABLE_NAME = "server";
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
-        public static final String COLUMN_NAME_SERVER_NAME = "serverName";
-        public static final String COLUMN_NAME_SERVER_URL = "serverUrl";
-        public static final String COLUMN_NAME_SERVER_USER = "userName";
-        public static final String COLUMN_NAME_SERVER_MAIL = "userMail";
+        public static final String COLUMN_NAME_SERVER_NAME = "server_name";
+        public static final String COLUMN_NAME_SERVER_URL = "server_url";
+        public static final String COLUMN_NAME_SERVER_USER = "user_name";
+        public static final String COLUMN_NAME_SERVER_MAIL = "user_mail";
+        public static final String COLUMN_NAME_LAST_VISIT = "last_visit";
 
         public static final String SERVER_URI_STRING = "content://"
-                + CONTENT_AUTHORITY +
-                "/" + TABLE_NAME;
+                + "me.lehrner.newsgroupsndy.provider/" + TABLE_NAME;
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Daniel Lehrner
+ * Copyright (C) 2017 Daniel Lehrner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +14,14 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.presenter;
+package me.lehrner.newsgroupsndy.view;
 
-import me.lehrner.newsgroupsndy.view.AddServerView;
+public interface AddGroupView {
+    int GROUP_ID_NOT_SET = -1;
 
-public interface ServerPresenter {
-    void saveServer();
-    void loadServerDetails();
-    void deleteServer(int id);
-    void setView(AddServerView v);
-    String[] getLoaderProjection();
-    String getLoaderOrder();
-    String getLoaderUriString();
+    int getGroupId();
+    String getGroupName();
+    int getServerId();
+
+    void closeAddGroupView();
 }

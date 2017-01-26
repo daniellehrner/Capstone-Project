@@ -12,14 +12,20 @@
     <string name="user_mail_hint">jane.doe@example.com</string>
     <string name="new_server">New server</string>
 
+    <!-- Group view -->
+    <string name="group_name_title">Subscribe to group</string>
+    <string name="new_group">Subscribe to group</string>
+
     <!-- Buttons -->
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
 
     <!-- Server content provider -->
-    <string name="content_authority">me.lehrner.newsgroupsndy</string>
+    <string name="content_authority">me.lehrner.newsgroupsndy.provider</string>
     <string name="menu">Menu</string>
     <string name="delete">Delete</string>
     <string name="edit">Edit</string>
     <string name="url_invalid">URL is not valid</string>
+    <string name="search">Search</string>
+    <string name="search_groups">Search groups</string>
 </resources>

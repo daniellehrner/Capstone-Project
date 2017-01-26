@@ -27,20 +27,21 @@ import me.lehrner.newsgroupsndy.model.ServerFactory;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.view.AddServerView;
 
-public class ServerPresenterImpl extends ListViewPresenterImpl implements ServerPresenter {
+public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private final ServerRepository mServerRepository;
     private AddServerView mAddServerView;
 
+    // sort case insensitive
+    private static final String mLoaderOrder = ServerEntry.COLUMN_NAME_SERVER_NAME +
+            " COLLATE NOCASE";
+    private static final String[] mLoaderProjection = {
+            ServerEntry._ID,
+            ServerEntry.COLUMN_NAME_SERVER_NAME};
+
     public ServerPresenterImpl(ServerRepository serverRepository) {
         mServerRepository = serverRepository;
-        mLoaderUriString = ServerEntry.SERVER_URI_STRING;
-        mLoaderProjection = new String[]{
-                ServerEntry._ID,
-                ServerEntry.COLUMN_NAME_SERVER_NAME};
-        // sort case insensitive
-        mLoaderSortOrder = ServerEntry.COLUMN_NAME_SERVER_NAME + " COLLATE NOCASE";
     }
 
     @Override
@@ -106,5 +107,20 @@ public class ServerPresenterImpl extends ListViewPresenterImpl implements Server
     @Override
     public void deleteServer(int id) {
         mServerRepository.deleteServer(id);
+    }
+
+    @Override
+    public String[] getLoaderProjection() {
+        return mLoaderProjection;
+    }
+
+    @Override
+    public String getLoaderOrder() {
+         return mLoaderOrder;
+    }
+
+    @Override
+    public String getLoaderUriString() {
+        return ServerEntry.SERVER_URI_STRING;
     }
 }

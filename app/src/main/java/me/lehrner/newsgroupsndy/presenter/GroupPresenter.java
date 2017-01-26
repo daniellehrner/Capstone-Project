@@ -16,9 +16,19 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
-interface GroupPresenter extends ListViewPresenter {
-    void subscribeToGroup();
-    void loadGroupDetails();
+import me.lehrner.newsgroupsndy.view.GroupView;
+
+public interface GroupPresenter {
+    void subscribeToGroup(int id);
     void unsubscribeFromGroup(int id);
-    void setView();
+    void setGroupView(GroupView groupView);
+    String[] getLoaderProjection();
+    String getLoaderOrder();
+    String getLoaderUriString();
+    void updateGroupList(int serverId);
+    String getSubscribedGroupsSelection();
+    String getUnsubscribedGroupsSelection();
+    void updateNotSuccessful();
+    void updateSuccessful();
+    void onPause();
 }

@@ -19,7 +19,11 @@ package me.lehrner.newsgroupsndy;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
+import me.lehrner.newsgroupsndy.view.AddGroupDialogFragment;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
+import me.lehrner.newsgroupsndy.view.GroupActivity;
+import me.lehrner.newsgroupsndy.view.GroupAdapter.GroupAdapterViewHolder;
 import me.lehrner.newsgroupsndy.view.MainActivity;
 import me.lehrner.newsgroupsndy.view.ServerAdapter.ServerAdapterViewHolder;
 
@@ -29,4 +33,7 @@ public interface AppComponent {
     void inject(AddServerDialogFragment target);
     void inject(MainActivity target);
     void inject(ServerAdapterViewHolder target);
+    void inject(AddGroupDialogFragment target);
+    void inject(GroupActivity target);
+    void inject(GroupAdapterViewHolder target);
 }

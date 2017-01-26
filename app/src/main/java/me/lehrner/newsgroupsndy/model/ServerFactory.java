@@ -16,12 +16,16 @@
 
 package me.lehrner.newsgroupsndy.model;
 
+import java.util.Date;
+import java.util.GregorianCalendar;
+
 public class ServerFactory {
     private int mId;
     private String mServerName;
     private String mServerUrl;
     private String mUserName;
     private String mUserMail;
+    private Date mLastVisit = null;
 
     private ServerFactory() {}
 
@@ -54,11 +58,25 @@ public class ServerFactory {
         return this;
     }
 
+    public ServerFactory withLastVisit(Date lastVisit) {
+        this.mLastVisit = lastVisit;
+        return this;
+    }
+
     public Server build() {
+        GregorianCalendar lastVisit = null;
+
+        if (mLastVisit != null) {
+            lastVisit = new GregorianCalendar();
+            lastVisit.setTime(mLastVisit);
+        }
+
         return new Server(
                 this.mId,
                 this.mServerName,
                 this.mServerUrl,
-                new User(this.mUserName, this.mUserMail));
+                new User(this.mUserName, this.mUserMail),
+                lastVisit
+        );
     }
 }

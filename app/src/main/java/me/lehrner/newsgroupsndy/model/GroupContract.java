@@ -23,15 +23,11 @@ public class GroupContract {
     public GroupContract() {}
 
     public static abstract class GroupEntry implements BaseColumns {
-        static final String CONTENT_AUTHORITY = "me.lehrner.newsgroupsndy";
-        static final String TABLE_NAME = "newsgroup";
-        public static final String CONTENT_TYPE =
-                ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + TABLE_NAME;
+        public static final String TABLE_NAME = "newsgroup";
         public static final String COLUMN_NAME_GROUP_NAME = "name";
-        static final String COLUMN_NAME_SERVER_ID = "serverId";
+        public static final String COLUMN_NAME_SERVER_ID = "server_id";
 
-        public static final String SERVER_URI_STRING = "content://"
-                + CONTENT_AUTHORITY +
-                "/" + TABLE_NAME;
+        public static final String GROUP_URI_STRING = "content://"
+                + "me.lehrner.newsgroupsndy.provider/" + TABLE_NAME;
     }
 }

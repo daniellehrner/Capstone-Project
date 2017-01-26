@@ -23,9 +23,13 @@ import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
+import me.lehrner.newsgroupsndy.presenter.GroupPresenterImpl;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenterImpl;
+import me.lehrner.newsgroupsndy.repository.ContentProviderGroupRepositoryImpl;
 import me.lehrner.newsgroupsndy.repository.ContentProviderServerRepositoryImpl;
+import me.lehrner.newsgroupsndy.repository.GroupRepository;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 
 @Module
@@ -49,7 +53,19 @@ public class AppModule {
     }
 
     @Provides
-    public ServerPresenter provideUserPresenter(ServerRepository serverRepository) {
+    public ServerPresenter provideSeverPresenter(ServerRepository serverRepository) {
         return new ServerPresenterImpl(serverRepository);
+    }
+
+    @Provides
+    @Singleton
+    public GroupRepository provideGroupRepository(Context context) {
+        return new ContentProviderGroupRepositoryImpl(context);
+    }
+
+    @Provides
+    public GroupPresenter provideGroupPresenter(GroupRepository groupRepository,
+                                                ServerRepository serverRepository) {
+        return new GroupPresenterImpl(groupRepository, serverRepository);
     }
 }

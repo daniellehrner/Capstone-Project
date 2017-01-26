@@ -17,25 +17,43 @@
 package me.lehrner.newsgroupsndy.repository;
 
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
-import me.lehrner.newsgroupsndy.model.ServerContract;
+import me.lehrner.newsgroupsndy.R;
+import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
+import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.DbHelper;
 
-public class ServerProvider extends ContentProvider {
+public class NdyProvider extends ContentProvider {
     private DbHelper mDbHelper;
     private Context mContext;
+
+    private final String LOG_TAG = this.getClass().getSimpleName();
+
+    private static final int SERVER = 1;
+    private static final int GROUP = 2;
+
+    private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
+
+    static {
+        sUriMatcher.addURI("me.lehrner.newsgroupsndy.provider", ServerEntry.TABLE_NAME, SERVER);
+        sUriMatcher.addURI("me.lehrner.newsgroupsndy.provider", GroupEntry.TABLE_NAME, GROUP);
+    }
 
     @Override
     public boolean onCreate() {
         mContext = getContext();
         mDbHelper = new DbHelper(mContext);
+
         return true;
     }
 
@@ -43,9 +61,8 @@ public class ServerProvider extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-
         Cursor cursor = mDbHelper.getReadableDatabase().query(
-                ServerContract.ServerEntry.TABLE_NAME,
+                getTableName(uri),
                 projection,
                 selection,
                 selectionArgs,
@@ -61,14 +78,15 @@ public class ServerProvider extends ContentProvider {
     @Nullable
     @Override
     public String getType(@NonNull Uri uri) {
-        return ServerContract.ServerEntry.CONTENT_TYPE;
+        return ContentResolver.CURSOR_DIR_BASE_TYPE +
+                "/" + "me.lehrner.newsgroupsndy.provider";
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
         long id = mDbHelper.getWritableDatabase().insert(
-                ServerContract.ServerEntry.TABLE_NAME,
+                getTableName(uri),
                 null,
                 values);
 
@@ -86,7 +104,7 @@ public class ServerProvider extends ContentProvider {
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
         int numberOfDeletedRows = mDbHelper.getWritableDatabase().delete(
-                ServerContract.ServerEntry.TABLE_NAME,
+                getTableName(uri),
                 selection,
                 selectionArgs);
 
@@ -100,7 +118,7 @@ public class ServerProvider extends ContentProvider {
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String whereClause, String[] whereArgs) {
         int numberOfUpdatedRows = mDbHelper.getWritableDatabase().update(
-                ServerContract.ServerEntry.TABLE_NAME,
+                getTableName(uri),
                 values,
                 whereClause,
                 whereArgs
@@ -111,5 +129,22 @@ public class ServerProvider extends ContentProvider {
         }
 
         return numberOfUpdatedRows;
+    }
+
+    private static String getTableName(Uri uri) {
+        String tableName = "";
+
+        switch (sUriMatcher.match(uri)) {
+            case SERVER:
+                tableName = ServerEntry.TABLE_NAME;
+                break;
+            case GROUP:
+                tableName = GroupEntry.TABLE_NAME;
+                break;
+            default:
+                Log.e("NdyProvider", "Unknown uri: " + uri.toString());
+        }
+
+        return tableName;
     }
 }

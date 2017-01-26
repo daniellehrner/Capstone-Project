@@ -16,17 +16,23 @@
 
 package me.lehrner.newsgroupsndy.model;
 
+import java.util.Calendar;
+import java.util.Date;
+
 public final class Server {
     private final int mId;
     private final String mServerName;
     private final String mServerUrl;
     private final User mUser;
+    private final Calendar mLastVisit;
 
-    public Server(int id, String serverName, String serverUrl, User user) {
+    public Server(int id, String serverName, String serverUrl,
+                  User user, Calendar lastVisit) {
         mId = id;
         mServerName = serverName;
         mServerUrl = serverUrl;
         mUser = user;
+        mLastVisit = lastVisit;
     }
 
     public int getId() {
@@ -51,6 +57,10 @@ public final class Server {
 
     public String getUserMail() {
         return mUser.getUserMail();
+    }
+
+    public Calendar getLastVisit() {
+        return mLastVisit;
     }
 
 }

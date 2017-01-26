@@ -156,9 +156,9 @@ public class MainActivity extends AppCompatActivity
 
         }
         else {
-            Intent editServerIntent = new Intent(this, AddServerActivity.class);
-            editServerIntent.putExtra(AddServerActivity.SERVER_ID_KEY, mItemId);
-            startActivity(editServerIntent);
+            Intent groupIntent = new Intent(this, GroupActivity.class);
+            groupIntent.putExtra(GroupActivity.SERVER_ID_KEY, mItemId);
+            startActivity(groupIntent);
         }
     }
 

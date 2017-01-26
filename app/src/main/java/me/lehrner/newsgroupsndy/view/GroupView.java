@@ -1,5 +1,6 @@
+package me.lehrner.newsgroupsndy.view;
 /*
- * Copyright (C) 2016 Daniel Lehrner
+ * Copyright (C) 2017 Daniel Lehrner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,16 +15,6 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.presenter;
-
-import me.lehrner.newsgroupsndy.view.AddServerView;
-
-public interface ServerPresenter {
-    void saveServer();
-    void loadServerDetails();
-    void deleteServer(int id);
-    void setView(AddServerView v);
-    String[] getLoaderProjection();
-    String getLoaderOrder();
-    String getLoaderUriString();
+public interface GroupView {
+    void reloadList();
 }

@@ -19,13 +19,15 @@ package me.lehrner.newsgroupsndy.model;
 
 import android.support.annotation.NonNull;
 
-final class Group {
+public final class Group {
     private final int mId;
     private final String mGroupName;
+    private final int mServerId;
 
-    public Group(int id, @NonNull String groupName) {
+    public Group(int id, @NonNull String groupName, int serverId) {
         mId = id;
         mGroupName = groupName;
+        mServerId = serverId;
     }
 
     public int getId() {
@@ -36,33 +38,37 @@ final class Group {
         return mGroupName;
     }
 
+    public int getServerId() {
+        return mServerId;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
                 "Id=" + mId +
-                ", Name='" + mGroupName + '\'' +
+                ", GroupName='" + mGroupName + '\'' +
+                ", ServerId=" + mServerId +
                 '}';
     }
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
         Group group = (Group) o;
 
-        return (mId == group.mId) && mGroupName.equals(group.mGroupName);
+        if (mId != group.mId) return false;
+        if (mServerId != group.mServerId) return false;
+        return mGroupName.equals(group.mGroupName);
+
     }
 
     @Override
     public int hashCode() {
         int result = mId;
         result = 31 * result + mGroupName.hashCode();
+        result = 31 * result + mServerId;
         return result;
     }
 }

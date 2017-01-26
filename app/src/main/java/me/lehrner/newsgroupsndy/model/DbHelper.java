@@ -24,7 +24,7 @@ import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
     private static final String DATABASE_NAME = "Server.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -37,7 +37,8 @@ public class DbHelper extends SQLiteOpenHelper {
                     ServerEntry.COLUMN_NAME_SERVER_NAME + TEXT_TYPE + COMMA_SEP +
                     ServerEntry.COLUMN_NAME_SERVER_URL + TEXT_TYPE + COMMA_SEP +
                     ServerEntry.COLUMN_NAME_SERVER_USER + TEXT_TYPE + COMMA_SEP +
-                    ServerEntry.COLUMN_NAME_SERVER_MAIL + TEXT_TYPE +
+                    ServerEntry.COLUMN_NAME_SERVER_MAIL + TEXT_TYPE + COMMA_SEP +
+                    ServerEntry.COLUMN_NAME_LAST_VISIT + TEXT_TYPE +
             " )";
 
     private static final String SQL_CREATE_GROUPS =
