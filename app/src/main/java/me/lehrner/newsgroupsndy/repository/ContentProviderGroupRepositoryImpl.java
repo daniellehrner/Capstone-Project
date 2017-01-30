@@ -32,9 +32,11 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private final Context mContext;
+    private final ServerRepository mServerRepository;
 
-    public ContentProviderGroupRepositoryImpl(Context context) {
+    public ContentProviderGroupRepositoryImpl(Context context, ServerRepository serverRepository) {
         mContext = context;
+        mServerRepository = serverRepository;
     }
 
     @Override
@@ -52,16 +54,20 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
 
     @Override
     public boolean saveGroups(int serverId, ArrayList<String> groupNames) {
-        boolean result = true;
+        boolean saveSuccess = true;
 
         for (String groupName : groupNames) {
             if (!saveGroup(groupName, serverId)) {
-                result = false;
+                saveSuccess = false;
                 break;
             }
         }
 
-        return result;
+        if (!saveSuccess) {
+            return false;
+        }
+
+        return mServerRepository.setLastVisitedNow(serverId);
     }
 
     private Group getGroupFromContentProvider(int id) {

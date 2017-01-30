@@ -25,7 +25,7 @@ public class ServerFactory {
     private String mServerUrl;
     private String mUserName;
     private String mUserMail;
-    private Date mLastVisit = null;
+    private int mLastVisit;
 
     private ServerFactory() {}
 
@@ -58,25 +58,25 @@ public class ServerFactory {
         return this;
     }
 
-    public ServerFactory withLastVisit(Date lastVisit) {
+    public ServerFactory withLastVisit(int lastVisit) {
         this.mLastVisit = lastVisit;
         return this;
     }
 
     public Server build() {
-        GregorianCalendar lastVisit = null;
+//        GregorianCalendar lastVisit = null;
 
-        if (mLastVisit != null) {
-            lastVisit = new GregorianCalendar();
-            lastVisit.setTime(mLastVisit);
-        }
+//        if (mLastVisit != 0) {
+//            lastVisit = new GregorianCalendar();
+//            lastVisit.setTimeInMillis(mLastVisit * 1000L);
+//        }
 
         return new Server(
                 this.mId,
                 this.mServerName,
                 this.mServerUrl,
                 new User(this.mUserName, this.mUserMail),
-                lastVisit
+                this.mLastVisit
         );
     }
 }

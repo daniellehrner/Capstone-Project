@@ -21,6 +21,9 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
+import java.util.Calendar;
+import java.util.Date;
+
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.ServerFactory;
@@ -56,6 +59,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
                 ServerEntry.COLUMN_NAME_SERVER_URL,
                 ServerEntry.COLUMN_NAME_SERVER_USER,
                 ServerEntry.COLUMN_NAME_SERVER_MAIL,
+                ServerEntry.COLUMN_NAME_LAST_VISIT
         };
         String selection = ServerEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
@@ -70,6 +74,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
 
         if (serverCursor != null && serverCursor.getCount() > 0) {
             serverCursor.moveToFirst();
+
             String serverName = serverCursor.getString(
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME));
             String url = serverCursor.getString(
@@ -78,6 +83,8 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_USER));
             String userMail = serverCursor.getString(
                     serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_MAIL));
+            int lastVisitInt = serverCursor.getInt(
+                    serverCursor.getColumnIndex(ServerEntry.COLUMN_NAME_LAST_VISIT));
             
             serverCursor.close();
 
@@ -87,6 +94,7 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
                 withServerUrl(url).
                 withUserName(userName).
                 withUserMail(userMail).
+                withLastVisit(lastVisitInt).
                 build();
         }
 
@@ -137,5 +145,23 @@ public class ContentProviderServerRepositoryImpl implements ServerRepository {
         );
 
         return numberOfDeletedRows != 0;
+    }
+
+    @Override
+    public boolean setLastVisitedNow(int id) {
+        ContentValues values = new ContentValues();
+        Date date = new Date();
+        int nowUnixTime = (int) (date.getTime() / 1000);
+
+        values.put(ServerEntry.COLUMN_NAME_LAST_VISIT, nowUnixTime);
+
+        int numberOfUpdatedRows = mContext.getContentResolver().update(
+                Uri.parse(ServerEntry.SERVER_URI_STRING),
+                values,
+                ServerEntry._ID + " = ?",
+                new String[]{String.valueOf(id)}
+        );
+
+        return numberOfUpdatedRows != 0;
     }
 }

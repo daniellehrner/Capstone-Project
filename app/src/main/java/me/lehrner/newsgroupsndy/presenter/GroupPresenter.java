@@ -29,6 +29,7 @@ public interface GroupPresenter {
     String getSubscribedGroupsSelection();
     String getUnsubscribedGroupsSelection();
     void updateNotSuccessful();
-    void updateSuccessful();
+    void updateSuccessful(int serverId);
     void onPause();
+    String getLoaderSelection(int serverId);
 }

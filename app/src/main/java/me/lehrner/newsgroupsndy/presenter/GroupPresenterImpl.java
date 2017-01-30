@@ -39,6 +39,9 @@ public class GroupPresenterImpl implements GroupPresenter {
             GroupEntry.COLUMN_NAME_GROUP_NAME
     };
 
+    private static final String mGroupSelection = GroupEntry.COLUMN_NAME_SERVER_ID +
+            " = ";
+
     public GroupPresenterImpl(GroupRepository groupRepository,
                               ServerRepository serverRepository) {
         mGroupRepository = groupRepository;
@@ -102,12 +105,14 @@ public class GroupPresenterImpl implements GroupPresenter {
     }
 
     @Override
-    public void updateSuccessful() {
+    public void updateSuccessful(int serverId) {
         mUpdateListTask = null;
 
         if (mGroupView == null) {
             throw new RuntimeException(LOG_TAG + ": mGroupView not set");
         }
+
+        mServerRepository.setLastVisitedNow(serverId);
 
         mGroupView.reloadList();
     }
@@ -119,5 +124,10 @@ public class GroupPresenterImpl implements GroupPresenter {
         }
 
         mUpdateListTask = null;
+    }
+
+    @Override
+    public String getLoaderSelection(int serverId) {
+        return mGroupSelection + serverId;
     }
 }

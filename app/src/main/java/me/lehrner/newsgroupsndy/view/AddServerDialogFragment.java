@@ -79,6 +79,8 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
         builder.setView(R.layout.fragment_add_server_dialog)
                 .setCustomTitle(titleView);
 
+
+
         return builder.create();
     }
 

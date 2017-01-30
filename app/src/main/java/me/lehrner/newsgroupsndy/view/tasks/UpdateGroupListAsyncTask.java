@@ -23,11 +23,9 @@ import org.apache.commons.net.nntp.NewGroupsOrNewsQuery;
 import org.apache.commons.net.nntp.NewsgroupInfo;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
 
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
@@ -35,18 +33,21 @@ import me.lehrner.newsgroupsndy.repository.GroupRepository;
 
 public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, Boolean> {
     private GroupRepository mGroupRepository;
-    private GroupPresenter mGroupPresenter;
+    private WeakReference<GroupPresenter> mGroupPresenterWeakReference;
+    private int mServerId;
 
     public UpdateGroupListAsyncTask(GroupPresenter groupPresenter,
                                     GroupRepository groupRepository) {
-        mGroupPresenter = groupPresenter;
+        mGroupPresenterWeakReference = new WeakReference<>(groupPresenter);
         mGroupRepository = groupRepository;
     }
 
     @Override
     protected Boolean doInBackground(Server... servers) {
+        mServerId = servers[0].getId();
+
         String hostName = servers[0].getServerUrl();
-        Calendar lastVisit = servers[0].getLastVisit();
+        int lastVisitInt = servers[0].getLastVisit();
 
         NewsgroupInfo[] newsgroupInfos = {};
         ArrayList<String> groupNames = new ArrayList<>();
@@ -55,7 +56,10 @@ public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, Boolean> {
             NNTPClient nntpClient = new NNTPClient();
             nntpClient.connect(hostName, 119);
 
-            if (lastVisit != null) {
+            if (lastVisitInt != 0) {
+                Calendar lastVisit = Calendar.getInstance();
+                lastVisit.setTimeInMillis(lastVisitInt * 1000L);
+
                 NewGroupsOrNewsQuery query = new NewGroupsOrNewsQuery(lastVisit, false);
                 newsgroupInfos = nntpClient.listNewNewsgroups(query);
             } else {
@@ -64,7 +68,7 @@ public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, Boolean> {
 
             nntpClient.disconnect();
         } catch (IOException e) {
-            mGroupPresenter.updateNotSuccessful();
+            mGroupPresenterWeakReference.get().updateNotSuccessful();
         }
 
         if (newsgroupInfos == null) {
@@ -82,16 +86,10 @@ public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean success) {
         if (success) {
-            mGroupPresenter.updateSuccessful();
+            mGroupPresenterWeakReference.get().updateSuccessful(mServerId);
         }
         else {
-            mGroupPresenter.updateNotSuccessful();
+            mGroupPresenterWeakReference.get().updateNotSuccessful();
         }
-    }
-
-    @Override
-    protected void onCancelled(Boolean result) {
-        mGroupPresenter = null;
-        mGroupRepository = null;
     }
 }

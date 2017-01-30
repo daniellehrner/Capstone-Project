@@ -22,4 +22,5 @@ public interface ServerRepository {
     Server getServer(int id);
     boolean saveServer(Server s);
     boolean deleteServer(int id);
+    boolean setLastVisitedNow(int id);
 }

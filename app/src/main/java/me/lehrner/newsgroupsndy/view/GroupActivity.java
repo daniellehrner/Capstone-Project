@@ -76,8 +76,6 @@ public class GroupActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
-
         if (savedInstanceState == null) {
             mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
         }
@@ -93,6 +91,8 @@ public class GroupActivity extends AppCompatActivity
         mGroupListView.setAdapter(mGroupAdapter);
 
         mGroupPresenter.setGroupView(this);
+
+        getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
     }
 
     @SuppressWarnings("unused")
@@ -158,12 +158,12 @@ public class GroupActivity extends AppCompatActivity
                 Uri groupUri = Uri.parse(mGroupPresenter.getLoaderUriString());
 
                 return new CursorLoader(
-                        this,                                   // Parent activity context
-                        groupUri,                               // Table to query
-                        mGroupPresenter.getLoaderProjection(),  // Projection to return
-                        null,                                   // No selection clause
-                        null,                                   // No selection arguments
-                        mGroupPresenter.getLoaderOrder()        // Sort order
+                        this,                                           // Parent activity context
+                        groupUri,                                       // Table to query
+                        mGroupPresenter.getLoaderProjection(),          // Projection to return
+                        mGroupPresenter.getLoaderSelection(mServerId),  // No selection clause
+                        null,                                           // No selection arguments
+                        mGroupPresenter.getLoaderOrder()                // Sort order
                 );
             default:
                 // An invalid id was passed in

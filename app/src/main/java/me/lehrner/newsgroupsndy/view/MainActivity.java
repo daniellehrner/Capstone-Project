@@ -152,6 +152,8 @@ public class MainActivity extends AppCompatActivity
     public void onListViewClick(int itemId) {
         mItemId = itemId;
 
+        Log.d(LOG_TAG, "mItemId = " + mItemId);
+
         if (mTwoPane) {
 
         }
