@@ -21,7 +21,7 @@ import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.repository.GroupRepository;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.view.GroupView;
-import me.lehrner.newsgroupsndy.view.tasks.UpdateGroupListAsyncTask;
+import me.lehrner.newsgroupsndy.presenter.tasks.UpdateGroupListAsyncTask;
 
 public class GroupPresenterImpl implements GroupPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();

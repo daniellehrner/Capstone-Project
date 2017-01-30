@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view.tasks;
+package me.lehrner.newsgroupsndy.presenter.tasks;
 
 import android.os.AsyncTask;
 

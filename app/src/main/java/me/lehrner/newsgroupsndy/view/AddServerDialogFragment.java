@@ -35,8 +35,6 @@ import javax.inject.Inject;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
-import me.lehrner.newsgroupsndy.view.tasks.GetServerAsyncTask;
-import me.lehrner.newsgroupsndy.view.tasks.SaveServerAsyncTask;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment
                                      implements AddServerView,
@@ -155,12 +153,13 @@ public class AddServerDialogFragment extends AppCompatDialogFragment
     public void onResume() {
         super.onResume();
 
-        (new GetServerAsyncTask(mServerPresenter, this)).execute();
+        mServerPresenter.setView(this);
+        mServerPresenter.loadServerDetails();
     }
 
     @Override
     public void onServerSave() {
-        (new SaveServerAsyncTask(mServerPresenter)).execute();
+        mServerPresenter.saveServer();
     }
 
     private String getStringFromEditText(int viewId) {

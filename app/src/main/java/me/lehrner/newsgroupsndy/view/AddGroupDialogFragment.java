@@ -40,7 +40,6 @@ import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
-import me.lehrner.newsgroupsndy.view.tasks.UpdateGroupListAsyncTask;
 
 public class AddGroupDialogFragment extends AppCompatDialogFragment
                                     implements AddGroupView,
@@ -144,15 +143,7 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
     }
 
     @Override
-    public void onResume() {
-        super.onResume();
-
-//        (new UpdateGroupListAsyncTask(mGroupPresenter, this)).execute();
-    }
-
-    @Override
     public void onGroupSave() {
-//        (new SubscribeGroupAysncTask(mGroupPresenter)).execute();
     }
 
     private String getStringFromAutoCompleteText(int viewId) {
