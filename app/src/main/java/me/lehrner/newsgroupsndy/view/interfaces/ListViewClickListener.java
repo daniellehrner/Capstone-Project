@@ -1,6 +1,5 @@
-package me.lehrner.newsgroupsndy.view;
 /*
- * Copyright (C) 2017 Daniel Lehrner
+ * Copyright (C) 2016 Daniel Lehrner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +14,9 @@ package me.lehrner.newsgroupsndy.view;
  * limitations under the License.
  */
 
-public interface GroupView {
-    void reloadList();
+package me.lehrner.newsgroupsndy.view.interfaces;
+
+public interface ListViewClickListener {
+    void onListViewClick(int itemId, String name);
+    void onListViewEditClick(int itemId);
 }

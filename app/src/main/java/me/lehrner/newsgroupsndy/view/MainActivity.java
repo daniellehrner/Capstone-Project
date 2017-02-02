@@ -39,6 +39,10 @@ import butterknife.OnClick;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerClickHandler;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
+import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 
 public class MainActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor>, ListViewClickListener, GetServerId {

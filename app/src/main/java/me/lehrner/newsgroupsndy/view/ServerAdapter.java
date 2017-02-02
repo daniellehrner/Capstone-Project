@@ -33,6 +33,7 @@ import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 
 public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdapterViewHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();

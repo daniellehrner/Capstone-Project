@@ -14,8 +14,14 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view;
+package me.lehrner.newsgroupsndy.view.interfaces;
 
-public interface AddGroupClickHandler {
-    void onGroupSave();
+public interface AddGroupView {
+    int GROUP_ID_NOT_SET = -1;
+
+    int getGroupId();
+    String getGroupName();
+    int getServerId();
+
+    void closeAddGroupView();
 }

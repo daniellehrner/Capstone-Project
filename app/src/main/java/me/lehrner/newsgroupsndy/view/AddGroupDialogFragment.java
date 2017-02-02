@@ -40,10 +40,14 @@ import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupClickHandler;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
+import me.lehrner.newsgroupsndy.view.interfaces.GetGroupId;
+import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 
 public class AddGroupDialogFragment extends AppCompatDialogFragment
                                     implements AddGroupView,
-                                        AddGroupClickHandler,
+        AddGroupClickHandler,
                                         SearchView.OnQueryTextListener{
 
     private final String LOG_TAG = this.getClass().getSimpleName();

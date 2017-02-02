@@ -26,7 +26,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,6 +38,8 @@ import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
+import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 
 public class GroupFragment extends Fragment
         implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor>,

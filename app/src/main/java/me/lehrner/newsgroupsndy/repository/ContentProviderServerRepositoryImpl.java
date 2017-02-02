@@ -21,13 +21,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import java.util.Calendar;
 import java.util.Date;
 
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.ServerFactory;
-import me.lehrner.newsgroupsndy.view.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 
 public class ContentProviderServerRepositoryImpl implements ServerRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();

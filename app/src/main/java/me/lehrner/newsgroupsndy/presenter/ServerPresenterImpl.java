@@ -25,7 +25,7 @@ import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.ServerFactory;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
-import me.lehrner.newsgroupsndy.view.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 
 public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();

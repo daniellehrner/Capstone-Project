@@ -14,8 +14,21 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view;
+package me.lehrner.newsgroupsndy.view.interfaces;
 
-public interface AddServerClickHandler {
-    void onServerSave();
+public interface AddServerView {
+    int SERVER_ID_NOT_SET = -1;
+
+    int getServerId();
+    String getServerName();
+    String getServerUrl();
+    String getUserName();
+    String getUserMail();
+    void setServerName(String s);
+    void setServerUrl(String s);
+    void setUserName(String s);
+    void setUserMail(String s);
+
+    void showUrlIsInvalid();
+    void closeAddServerView();
 }

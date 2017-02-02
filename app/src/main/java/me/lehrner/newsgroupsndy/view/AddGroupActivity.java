@@ -25,10 +25,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.SearchView;
 
 import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.R;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupClickHandler;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
+import me.lehrner.newsgroupsndy.view.interfaces.GetGroupId;
 
 public class AddGroupActivity extends AppCompatActivity implements GetGroupId {
     private final String LOG_TAG = this.getClass().getSimpleName();

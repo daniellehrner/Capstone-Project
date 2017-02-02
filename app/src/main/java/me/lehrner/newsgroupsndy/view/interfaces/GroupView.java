@@ -1,5 +1,6 @@
+package me.lehrner.newsgroupsndy.view.interfaces;
 /*
- * Copyright (C) 2016 Daniel Lehrner
+ * Copyright (C) 2017 Daniel Lehrner
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +15,6 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view;
-
-public interface GetServerId {
-    int getServerId();
+public interface GroupView {
+    void reloadList();
 }

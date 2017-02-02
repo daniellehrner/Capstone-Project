@@ -27,6 +27,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import me.lehrner.newsgroupsndy.R;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerClickHandler;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 
 public class AddServerActivity extends AppCompatActivity implements GetServerId {
     private final String LOG_TAG = this.getClass().getSimpleName();

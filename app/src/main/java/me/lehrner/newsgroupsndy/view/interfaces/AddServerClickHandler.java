@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view;
+package me.lehrner.newsgroupsndy.view.interfaces;
 
-interface ListViewClickListener {
-    void onListViewClick(int itemId, String name);
-    void onListViewEditClick(int itemId);
+public interface AddServerClickHandler {
+    void onServerSave();
 }

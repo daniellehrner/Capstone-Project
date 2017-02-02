@@ -34,6 +34,7 @@ import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapterViewHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();

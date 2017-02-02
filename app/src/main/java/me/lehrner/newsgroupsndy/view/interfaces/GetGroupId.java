@@ -1,4 +1,4 @@
-package me.lehrner.newsgroupsndy.view;
+package me.lehrner.newsgroupsndy.view.interfaces;
 /*
  * Copyright (C) 2017 Daniel Lehrner
  *

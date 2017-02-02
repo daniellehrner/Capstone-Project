@@ -16,7 +16,7 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
-import me.lehrner.newsgroupsndy.view.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 
 public interface ServerPresenter {
     void saveServer();

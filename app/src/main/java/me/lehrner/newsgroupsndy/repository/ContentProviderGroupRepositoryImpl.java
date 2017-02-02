@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import me.lehrner.newsgroupsndy.model.Group;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.model.GroupFactory;
-import me.lehrner.newsgroupsndy.view.AddGroupView;
+import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
 
 public class ContentProviderGroupRepositoryImpl implements GroupRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();

@@ -35,10 +35,13 @@ import javax.inject.Inject;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.ServerPresenter;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerClickHandler;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
+import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment
                                      implements AddServerView,
-                                                AddServerClickHandler {
+        AddServerClickHandler {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
 
