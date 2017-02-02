@@ -171,7 +171,7 @@ public class GroupFragment extends Fragment
     }
 
     @Override
-    public void onListViewClick(int itemId) {
+    public void onListViewClick(int itemId, String name) {
         mItemId = itemId;
 
 //        if (mTwoPane) {

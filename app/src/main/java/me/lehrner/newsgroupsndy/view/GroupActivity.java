@@ -37,24 +37,28 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final String ADD_GROUP_DIALOG_TAG = "ADD_GROUP_DIALOG_TAG";
     public static final String SERVER_ID_KEY = "serverIdKey";
+    public static final String SERVER_NAME = "serverNameKey";
     private int mServerId;
+    private String mServerName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("Groups");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         if (savedInstanceState == null) {
             mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
+            mServerName = getIntent().getStringExtra(SERVER_NAME);
         }
         else {
             mServerId = savedInstanceState.getInt(SERVER_ID_KEY);
+            mServerName = savedInstanceState.getString(SERVER_NAME);
         }
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(mServerName);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         GroupFragment groupFragment = GroupFragment.newInstance(mServerId);
         getSupportFragmentManager().beginTransaction().
@@ -92,5 +96,6 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(SERVER_ID_KEY, mServerId);
+        outState.putString(SERVER_NAME, mServerName);
     }
 }

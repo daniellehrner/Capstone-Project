@@ -73,7 +73,10 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
                             mCursor.getColumnIndex(GroupEntry.COLUMN_NAME_GROUP_NAME)));
                     mListViewClickListener.onListViewClick(
                             mCursor.getInt(
-                                    mCursor.getColumnIndex(GroupEntry._ID)));
+                                    mCursor.getColumnIndex(GroupEntry._ID)),
+                            mCursor.getString(
+                                    mCursor.getColumnIndex(GroupEntry.COLUMN_NAME_GROUP_NAME))
+                    );
                     break;
                 case R.id.group_item_menu:
                     Log.d(LOG_TAG, "Menu click");

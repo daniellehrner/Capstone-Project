@@ -69,7 +69,9 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
                             mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
                     mListViewClickListener.onListViewClick(
                             mCursor.getInt(
-                            mCursor.getColumnIndex(ServerEntry._ID)));
+                            mCursor.getColumnIndex(ServerEntry._ID)),
+                            mCursor.getString(
+                                    mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
                     break;
                 case R.id.server_item_menu:
                     Log.d(LOG_TAG, "Menu click");

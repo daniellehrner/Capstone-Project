@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListViewClick(int itemId) {
+    public void onListViewClick(int itemId, String name) {
         mItemId = itemId;
 
         Log.d(LOG_TAG, "mItemId = " + mItemId);
@@ -160,6 +160,7 @@ public class MainActivity extends AppCompatActivity
         else {
             Intent groupIntent = new Intent(this, GroupActivity.class);
             groupIntent.putExtra(GroupActivity.SERVER_ID_KEY, mItemId);
+            groupIntent.putExtra(GroupActivity.SERVER_NAME, name);
             startActivity(groupIntent);
         }
     }
