@@ -16,12 +16,9 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
-import me.lehrner.newsgroupsndy.view.GroupView;
-
 public interface GroupPresenter {
     void subscribeToGroup(int id);
     void unsubscribeFromGroup(int id);
-    void setGroupView(GroupView groupView);
     String[] getLoaderProjection();
     String getLoaderOrder();
     String getLoaderUriString();

@@ -14,7 +14,7 @@
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/server_list"
-        android:name="me.lehrner.newsgroupsndy..ui.MainFragment"
+        android:name="me.lehrner.newsgroupsndy.ui.MainFragment"
         android:layout_width="30dp"
         android:layout_height="match_parent"
         android:layout_marginLeft="16dp"

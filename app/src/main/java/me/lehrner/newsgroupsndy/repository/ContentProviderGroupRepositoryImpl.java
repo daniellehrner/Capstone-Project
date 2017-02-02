@@ -63,11 +63,7 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
             }
         }
 
-        if (!saveSuccess) {
-            return false;
-        }
-
-        return mServerRepository.setLastVisitedNow(serverId);
+        return saveSuccess;
     }
 
     private Group getGroupFromContentProvider(int id) {

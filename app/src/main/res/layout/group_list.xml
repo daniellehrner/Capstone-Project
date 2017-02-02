@@ -6,6 +6,7 @@
     android:name="me.lehrner.newsgroupsndy.ui.GroupFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     android:layout_marginLeft="@dimen/app_margin"
     android:layout_marginRight="@dimen/app_margin"
     app:layoutManager="LinearLayoutManager"

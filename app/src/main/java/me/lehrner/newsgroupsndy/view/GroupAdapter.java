@@ -16,6 +16,7 @@
 
 package me.lehrner.newsgroupsndy.view;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +38,7 @@ import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapterViewHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private Cursor mCursor;
+    private final GroupFragment mGroupFragment;
 
     public class GroupAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -44,16 +46,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
         final TextView mGroupName;
         final ImageButton mGroupMenu;
         private final ListViewClickListener mListViewClickListener;
+        private final Context mContext;
 
-        @Inject
-        GroupPresenter mGroupPresenter;
+        @Inject GroupPresenter mGroupPresenter;
 
-        GroupAdapterViewHolder(View view) {
+        GroupAdapterViewHolder(View view, GroupFragment groupFragment) {
             super(view);
-            GroupActivity groupActivity = (GroupActivity) view.getContext();
-            ((NDYApplication) groupActivity.getApplication()).getComponent().inject(this);
 
-            mListViewClickListener = groupActivity;
+            mContext = view.getContext();
+            ((NDYApplication) mContext.getApplicationContext()).getComponent().inject(this);
+
+            mListViewClickListener = groupFragment;
             mGroupName = (TextView) view.findViewById(R.id.group_item_name);
             mGroupMenu = (ImageButton) view.findViewById(R.id.group_item_menu);
 
@@ -102,13 +105,17 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
         }
     }
 
+    public GroupAdapter(GroupFragment groupFragment) {
+        mGroupFragment = groupFragment;
+    }
+
     @Override
     public GroupAdapterViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         if (viewGroup instanceof RecyclerView) {
             View view = LayoutInflater.from(viewGroup.getContext()).
                     inflate(R.layout.group_item, viewGroup, false);
             view.setFocusable(true);
-            return new GroupAdapterViewHolder(view);
+            return new GroupAdapterViewHolder(view, mGroupFragment);
         }
         else {
             throw new RuntimeException("Not bound to RecyclerView");

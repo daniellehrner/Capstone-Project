@@ -28,7 +28,6 @@ public class GroupPresenterImpl implements GroupPresenter {
 
     private final GroupRepository mGroupRepository;
     private final ServerRepository mServerRepository;
-    private GroupView mGroupView;
     private UpdateGroupListAsyncTask mUpdateListTask = null;
 
     // sort case insensitive
@@ -56,11 +55,6 @@ public class GroupPresenterImpl implements GroupPresenter {
     @Override
     public void unsubscribeFromGroup(int id) {
 //        mGroupRepository.deleteGroup(id);
-    }
-
-    @Override
-    public void setGroupView(GroupView groupView) {
-        mGroupView = groupView;
     }
 
     @Override
@@ -108,13 +102,7 @@ public class GroupPresenterImpl implements GroupPresenter {
     public void updateSuccessful(int serverId) {
         mUpdateListTask = null;
 
-        if (mGroupView == null) {
-            throw new RuntimeException(LOG_TAG + ": mGroupView not set");
-        }
-
         mServerRepository.setLastVisitedNow(serverId);
-
-        mGroupView.reloadList();
     }
 
     @Override
