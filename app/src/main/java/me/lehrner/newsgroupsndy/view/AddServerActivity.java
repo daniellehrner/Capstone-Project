@@ -26,6 +26,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import java.lang.ref.WeakReference;
+
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.view.interfaces.AddServerClickHandler;
 import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
@@ -35,7 +37,7 @@ public class AddServerActivity extends AppCompatActivity implements GetServerId 
     private final String LOG_TAG = this.getClass().getSimpleName();
     public static final String SERVER_ID_KEY = "serverIdKey";
 
-    private AddServerClickHandler mServerClickHandler;
+    private WeakReference<AddServerClickHandler> mServerClickHandlerWeakReference;
     private int mServerId;
 
     @Override
@@ -70,8 +72,9 @@ public class AddServerActivity extends AppCompatActivity implements GetServerId 
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_add_server:
-                if (mServerClickHandler != null) {
-                    mServerClickHandler.onServerSave();
+                AddServerClickHandler addServerClickHandler = mServerClickHandlerWeakReference.get();
+                if (addServerClickHandler != null) {
+                    addServerClickHandler.onServerSave();
                 }
                 return true;
 
@@ -83,7 +86,7 @@ public class AddServerActivity extends AppCompatActivity implements GetServerId 
     @Override
     public void onAttachFragment(Fragment fragment) {
         try {
-            mServerClickHandler = (AddServerClickHandler) fragment;
+            mServerClickHandlerWeakReference = new WeakReference<>((AddServerClickHandler) fragment);
         }
         catch (ClassCastException e) {
             Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
