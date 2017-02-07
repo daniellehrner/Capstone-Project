@@ -31,7 +31,14 @@
         <activity
             android:name=".view.GroupActivity"
             android:parentActivityName=".view.MainActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/group_add_searchable" />
+        </activity>
         <activity
             android:name=".view.AddGroupActivity"
             android:parentActivityName=".view.GroupActivity"

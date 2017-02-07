@@ -16,6 +16,8 @@
 
 package me.lehrner.newsgroupsndy.presenter;
 
+import android.util.Log;
+
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.repository.GroupRepository;
@@ -94,13 +96,16 @@ public class GroupPresenterImpl implements GroupPresenter {
 
     @Override
     public void updateNotSuccessful() {
+        Log.d(LOG_TAG, "updateSuccessful");
+
         mUpdateListTask = null;
     }
 
     @Override
     public void updateSuccessful(int serverId) {
-        mUpdateListTask = null;
+        Log.d(LOG_TAG, "updateSuccessful");
 
+        mUpdateListTask = null;
         mServerRepository.setLastVisitedNow(serverId);
     }
 

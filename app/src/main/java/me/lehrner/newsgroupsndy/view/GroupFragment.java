@@ -84,8 +84,6 @@ public class GroupFragment extends Fragment
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
         mServerId = getArguments() != null ? getArguments().getInt(SERVER_ID) : NO_SERVER_ID;
-
-        getActivity().getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
     }
 
     @Override
@@ -108,6 +106,8 @@ public class GroupFragment extends Fragment
         mGroupAdapter = new GroupAdapter(this);
 
         mGroupListView.setAdapter(mGroupAdapter);
+
+        getActivity().getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
 
         return mView;
     }
@@ -163,12 +163,16 @@ public class GroupFragment extends Fragment
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mGroupAdapter.swapCursor(data);
+        if (mGroupAdapter != null) {
+            mGroupAdapter.swapCursor(data);
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mGroupAdapter.swapCursor(null);
+        if (mGroupAdapter != null) {
+            mGroupAdapter.swapCursor(null);
+        }
     }
 
     @Override

@@ -38,6 +38,7 @@ import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdapterViewHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private Cursor mCursor;
+    private int mSelectedPosition = -1;
 
     public class ServerAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -66,6 +67,10 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
             mCursor.moveToPosition(getAdapterPosition());
             switch(v.getId()) {
                 case R.id.server_item:
+                    notifyItemChanged(mSelectedPosition);
+                    mSelectedPosition = getLayoutPosition();
+                    notifyItemChanged(mSelectedPosition);
+
                     Log.d(LOG_TAG, "Text: " + mCursor.getString(
                             mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
                     mListViewClickListener.onListViewClick(
@@ -122,6 +127,8 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
         mCursor.moveToPosition(position);
         String serverName = mCursor.getString(
                 mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME));
+
+        holder.itemView.setSelected(mSelectedPosition == position);
 
         holder.mServerName.setText(serverName);
     }

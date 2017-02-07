@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -30,6 +31,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
+
+import java.lang.ref.WeakReference;
 
 import javax.inject.Inject;
 
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity
     @BindView(R.id.server_list) RecyclerView mServerListView;
     @Inject ServerPresenter mServerPresenter;
 
-    private AddServerClickHandler mServerClickHandler;
+    private WeakReference<AddServerClickHandler> mServerClickHandlerWeakReference;
     private ServerAdapter mServerAdapter;
 
     private boolean mTwoPane = false;
@@ -98,8 +102,10 @@ public class MainActivity extends AppCompatActivity
 
     @SuppressWarnings("unused")
     public void onAddServerSave(View view) {
-        if (mServerClickHandler != null) {
-            mServerClickHandler.onServerSave();
+        AddServerClickHandler addServerClickHandler = mServerClickHandlerWeakReference.get();
+
+        if (addServerClickHandler != null) {
+            addServerClickHandler.onServerSave();
         }
     }
 
@@ -114,7 +120,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onAttachFragment(Fragment fragment) {
         try {
-            mServerClickHandler = (AddServerClickHandler) fragment;
+            mServerClickHandlerWeakReference = new WeakReference<>((AddServerClickHandler) fragment);
         }
         catch (ClassCastException e) {
             Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
@@ -154,19 +160,40 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListViewClick(int itemId, String name) {
-        mItemId = itemId;
 
-        Log.d(LOG_TAG, "mItemId = " + mItemId);
 
         if (mTwoPane) {
+            if (mItemId == itemId) {
+                return;
+            }
 
+            GroupFragment groupFragment = GroupFragment.newInstance(itemId);
+
+            if (mItemId == AddServerView.SERVER_ID_NOT_SET) {
+                getSupportFragmentManager().beginTransaction().
+                        add(R.id.groups_fragment_container, groupFragment).
+                        commit();
+            }
+            else {
+                FrameLayout groupsContainer = (FrameLayout) findViewById(R.id.groups_fragment_container);
+                groupsContainer.removeAllViews();
+
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+
+                transaction.replace(R.id.groups_fragment_container, groupFragment);
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
         }
         else {
             Intent groupIntent = new Intent(this, GroupActivity.class);
-            groupIntent.putExtra(GroupActivity.SERVER_ID_KEY, mItemId);
+            groupIntent.putExtra(GroupActivity.SERVER_ID_KEY, itemId);
             groupIntent.putExtra(GroupActivity.SERVER_NAME, name);
             startActivity(groupIntent);
         }
+
+        mItemId = itemId;
     }
 
     @Override

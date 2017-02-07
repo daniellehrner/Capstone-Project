@@ -20,6 +20,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -54,6 +55,8 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
 
     @Override
     public boolean saveGroups(int serverId, ArrayList<String> groupNames) {
+        Log.d(LOG_TAG, "Saving " + groupNames.size() + " groups");
+
         boolean saveSuccess = true;
 
         for (String groupName : groupNames) {
