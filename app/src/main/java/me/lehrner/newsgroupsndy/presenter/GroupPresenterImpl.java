@@ -122,4 +122,15 @@ public class GroupPresenterImpl implements GroupPresenter {
     public String getLoaderSelection(int serverId) {
         return mGroupSelection + serverId;
     }
+
+    @Override
+    public String getSearchSelection() {
+        return mGroupSelection + "? AND " + GroupEntry.COLUMN_NAME_GROUP_NAME +
+                " LIKE ?";
+    }
+
+    @Override
+    public String[] getSearchSelectionArgs(int serverId, String search) {
+        return  new String[]{String.valueOf(serverId), "%" + search + "%"};
+    }
 }

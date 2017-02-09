@@ -18,6 +18,7 @@ package me.lehrner.newsgroupsndy.view;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -32,6 +33,7 @@ import javax.inject.Inject;
 
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
+import me.lehrner.newsgroupsndy.model.DbHelper;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
 import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
@@ -40,6 +42,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
     private final String LOG_TAG = this.getClass().getSimpleName();
     private Cursor mCursor;
     private final GroupFragment mGroupFragment;
+    private final GroupPresenter mGroupPresenter;
 
     public class GroupAdapterViewHolder extends RecyclerView.ViewHolder
             implements View.OnClickListener, PopupMenu.OnMenuItemClickListener {
@@ -109,8 +112,9 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
         }
     }
 
-    public GroupAdapter(GroupFragment groupFragment) {
+    public GroupAdapter(GroupFragment groupFragment, GroupPresenter groupPresenter) {
         mGroupFragment = groupFragment;
+        mGroupPresenter = groupPresenter;
     }
 
     @Override
@@ -144,7 +148,45 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
     }
 
     void swapCursor(Cursor newCursor) {
+        if (mCursor != null) {
+            mCursor.close();
+        }
+
         mCursor = newCursor;
         notifyDataSetChanged();
+    }
+
+    public void filter(int serverId, String search) {
+        DbHelper dbHelper = new DbHelper(mGroupFragment.getContext());
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                GroupEntry.TABLE_NAME,
+                mGroupPresenter.getLoaderProjection(),
+                mGroupPresenter.getSearchSelection(),
+                mGroupPresenter.getSearchSelectionArgs(serverId, search),
+                null,
+                null,
+                mGroupPresenter.getLoaderOrder());
+
+        this.swapCursor(cursor);
+    }
+
+    public void resetFilter(int serverId) {
+        DbHelper dbHelper = new DbHelper(mGroupFragment.getContext());
+
+        SQLiteDatabase db = dbHelper.getReadableDatabase();
+
+        Cursor cursor = db.query(
+                GroupEntry.TABLE_NAME,
+                mGroupPresenter.getLoaderProjection(),
+                mGroupPresenter.getLoaderSelection(serverId),
+                null,
+                null,
+                null,
+                mGroupPresenter.getLoaderOrder());
+
+        this.swapCursor(cursor);
     }
 }

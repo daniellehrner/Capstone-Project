@@ -26,6 +26,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +104,7 @@ public class GroupFragment extends Fragment
 
         mGroupListView.setHasFixedSize(true);
 
-        mGroupAdapter = new GroupAdapter(this);
+        mGroupAdapter = new GroupAdapter(this, mGroupPresenter);
 
         mGroupListView.setAdapter(mGroupAdapter);
 
@@ -132,11 +133,22 @@ public class GroupFragment extends Fragment
 
     @Override
     public boolean onQueryTextSubmit(String s) {
+        Log.d(LOG_TAG, "onQueryTextSubmit: search string: " + s);
+
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
+        Log.d(LOG_TAG, "onQueryTextChange: search string: " + s);
+
+        if (s.length() > 2) {
+            mGroupAdapter.filter(mServerId, s);
+        }
+        else {
+            mGroupAdapter.resetFilter(mServerId);
+        }
+
         return false;
     }
 

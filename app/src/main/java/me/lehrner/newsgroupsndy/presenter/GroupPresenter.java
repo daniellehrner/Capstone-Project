@@ -29,4 +29,7 @@ public interface GroupPresenter {
     void updateSuccessful(int serverId);
     void onPause();
     String getLoaderSelection(int serverId);
+    String getSearchSelection();
+    String[] getSearchSelectionArgs(int serverId, String search);
+
 }
