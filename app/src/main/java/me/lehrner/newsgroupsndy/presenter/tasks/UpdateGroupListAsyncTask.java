@@ -32,7 +32,7 @@ import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
 import me.lehrner.newsgroupsndy.repository.GroupRepository;
 
-public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, ArrayList<String>> {
+public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, Boolean> {
     private String LOG_TAG = this.getClass().getSimpleName();
     private GroupRepository mGroupRepository;
     private WeakReference<GroupPresenter> mGroupPresenterWeakReference;
@@ -45,7 +45,7 @@ public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, ArrayList<
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Server... servers) {
+    protected Boolean doInBackground(Server... servers) {
         mServerId = servers[0].getId();
 
         String hostName = servers[0].getServerUrl();
@@ -85,27 +85,23 @@ public class UpdateGroupListAsyncTask extends AsyncTask<Server, Void, ArrayList<
             if (groupPresenter != null) {
                 groupPresenter.updateNotSuccessful();
             }
-            return new ArrayList<>();
+            return false;
         }
 
         if (newsgroupInfos == null) {
             Log.d(LOG_TAG, "newsgroupInfos is null");
-            return new ArrayList<>();
+            return false;
         }
 
         for (NewsgroupInfo newsgroupInfo : newsgroupInfos) {
             groupNames.add(newsgroupInfo.getNewsgroup());
         }
 
-        return groupNames;
+        return mGroupRepository.saveGroups(mServerId, groupNames);
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> groupNames) {
-
-        boolean success = mGroupRepository.saveGroups(
-                mServerId, groupNames);
-
+    protected void onPostExecute(Boolean success) {
         Log.d(LOG_TAG, "success: " + success);
 
         GroupPresenter groupPresenter = mGroupPresenterWeakReference.get();

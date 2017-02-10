@@ -24,5 +24,5 @@ import me.lehrner.newsgroupsndy.model.Group;
 public interface GroupRepository {
     Group getGroup(int id);
     boolean saveGroups(int serverId, ArrayList<String> groupNames);
-    boolean deleteGroups(int serverId);
+    boolean deleteGroupsOfServer(int serverId);
 }

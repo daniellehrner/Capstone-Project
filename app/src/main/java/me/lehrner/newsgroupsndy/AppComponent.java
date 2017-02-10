@@ -19,7 +19,6 @@ package me.lehrner.newsgroupsndy;
 import javax.inject.Singleton;
 
 import dagger.Component;
-import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
 import me.lehrner.newsgroupsndy.view.AddGroupDialogFragment;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
 import me.lehrner.newsgroupsndy.view.GroupActivity;

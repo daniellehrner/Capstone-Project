@@ -53,8 +53,9 @@ public class AppModule {
     }
 
     @Provides
-    public ServerPresenter provideSeverPresenter(ServerRepository serverRepository) {
-        return new ServerPresenterImpl(serverRepository);
+    public ServerPresenter provideSeverPresenter(ServerRepository serverRepository,
+                                                 GroupRepository groupRepository) {
+        return new ServerPresenterImpl(serverRepository, groupRepository);
     }
 
     @Provides

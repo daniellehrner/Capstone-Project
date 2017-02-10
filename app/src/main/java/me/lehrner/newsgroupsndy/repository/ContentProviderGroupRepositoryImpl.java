@@ -120,7 +120,7 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
     }
 
     @Override
-    public boolean deleteGroups(int serverId) {
+    public boolean deleteGroupsOfServer(int serverId) {
         int numberOfDeletedRows = mContext.getContentResolver().delete(
                 Uri.parse(GroupEntry.GROUP_URI_STRING),
                 GroupEntry.COLUMN_NAME_SERVER_ID + " = ?",

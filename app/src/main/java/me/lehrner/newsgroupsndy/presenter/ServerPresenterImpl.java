@@ -24,6 +24,7 @@ import java.util.regex.Matcher;
 import me.lehrner.newsgroupsndy.model.Server;
 import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.ServerFactory;
+import me.lehrner.newsgroupsndy.repository.GroupRepository;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 
@@ -31,6 +32,7 @@ public class ServerPresenterImpl implements ServerPresenter {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private final ServerRepository mServerRepository;
+    private final GroupRepository mGroupRepository;
     private AddServerView mAddServerView;
 
     // sort case insensitive
@@ -40,8 +42,10 @@ public class ServerPresenterImpl implements ServerPresenter {
             ServerEntry._ID,
             ServerEntry.COLUMN_NAME_SERVER_NAME};
 
-    public ServerPresenterImpl(ServerRepository serverRepository) {
+    public ServerPresenterImpl(ServerRepository serverRepository,
+                               GroupRepository groupRepository) {
         mServerRepository = serverRepository;
+        mGroupRepository = groupRepository;
     }
 
     @Override
@@ -106,6 +110,7 @@ public class ServerPresenterImpl implements ServerPresenter {
 
     @Override
     public void deleteServer(int id) {
+        mGroupRepository.deleteGroupsOfServer(id);
         mServerRepository.deleteServer(id);
     }
 
