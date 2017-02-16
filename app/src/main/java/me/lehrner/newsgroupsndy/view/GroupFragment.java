@@ -16,8 +16,6 @@
 
 package me.lehrner.newsgroupsndy.view;
 
-import android.app.SearchManager;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,12 +23,15 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.SearchView;
 
 import javax.inject.Inject;
 
@@ -50,14 +51,15 @@ public class GroupFragment extends Fragment
     private static final int GROUP_LOADER = 1;
     private static final int NO_SERVER_ID = -1;
     private static final String SERVER_ID = "groupFragmentServerId";
+    public static final String SERVER_ID_KEY = "serverIdKey";
+    public static final String GROUP_FILTER_KEY = "groupFilterKey";
 
-    View mView;
     private int mServerId;
     private GroupAdapter mGroupAdapter;
     private int mItemId = AddGroupView.GROUP_ID_NOT_SET;
-
-    @BindView(R.id.search_group)
-    SearchView mSearchView;
+    private String mFilter = "";
+    private SearchView mSearchView;
+    private boolean mDontUpdateFilter = false;
 
     @BindView(R.id.group_list)
     RecyclerView mGroupListView;
@@ -84,38 +86,39 @@ public class GroupFragment extends Fragment
 
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        mServerId = getArguments() != null ? getArguments().getInt(SERVER_ID) : NO_SERVER_ID;
+        if (savedInstanceState == null) {
+            mServerId = getArguments() != null ? getArguments().getInt(SERVER_ID) : NO_SERVER_ID;
+        }
+        else {
+            mServerId = savedInstanceState.getInt(SERVER_ID_KEY);
+            mFilter = savedInstanceState.getString(GROUP_FILTER_KEY);
+        }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mView = inflater.inflate(R.layout.fragment_group, container, false);
+        View view = inflater.inflate(R.layout.fragment_group, container, false);
 
-        ButterKnife.bind(this, mView);
-
-        SearchManager searchManager = (SearchManager)
-                getActivity().getSystemService(Context.SEARCH_SERVICE);
-
-        mSearchView.setSearchableInfo(searchManager.
-                getSearchableInfo(getActivity().getComponentName()));
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setIconifiedByDefault(false);
+        ButterKnife.bind(this, view);
 
         mGroupListView.setHasFixedSize(true);
 
-        mGroupAdapter = new GroupAdapter(this, mGroupPresenter);
-
-        mGroupListView.setAdapter(mGroupAdapter);
-
-        getActivity().getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
-
-        return mView;
+        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        mGroupAdapter = new GroupAdapter(this, mGroupPresenter);
+        mGroupListView.setAdapter(mGroupAdapter);
+
+        if (mFilter.isEmpty()) {
+            getActivity().getSupportLoaderManager().initLoader(GROUP_LOADER, null, this);
+        }
 
         if (mGroupPresenter != null && mServerId != NO_SERVER_ID) {
             mGroupPresenter.updateGroupList(mServerId);
@@ -133,20 +136,21 @@ public class GroupFragment extends Fragment
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-        Log.d(LOG_TAG, "onQueryTextSubmit: search string: " + s);
-
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
-        Log.d(LOG_TAG, "onQueryTextChange: search string: " + s);
-
-        if (s.length() > 2) {
-            mGroupAdapter.filter(mServerId, s);
-        }
-        else {
-            mGroupAdapter.resetFilter(mServerId);
+        if (!mDontUpdateFilter) {
+            if (s.length() > 1) {
+                mFilter = s;
+                mGroupAdapter.filter(mServerId, s);
+            } else {
+                if (!mFilter.isEmpty()) {
+                    mFilter = "";
+                    mGroupAdapter.resetFilter(mServerId);
+                }
+            }
         }
 
         return false;
@@ -159,12 +163,12 @@ public class GroupFragment extends Fragment
                 Uri groupUri = Uri.parse(mGroupPresenter.getLoaderUriString());
 
                 return new CursorLoader(
-                        getContext(),                                   // Parent activity context
-                        groupUri,                                       // Table to query
-                        mGroupPresenter.getLoaderProjection(),          // Projection to return
-                        mGroupPresenter.getLoaderSelection(mServerId),  // No selection clause
-                        null,                                           // No selection arguments
-                        mGroupPresenter.getLoaderOrder()                // Sort order
+                    getContext(),
+                    groupUri,
+                    mGroupPresenter.getLoaderProjection(),
+                    mGroupPresenter.getLoaderSelection(mServerId),
+                    null,
+                    mGroupPresenter.getLoaderOrder()
                 );
             default:
                 // An invalid id was passed in
@@ -190,29 +194,53 @@ public class GroupFragment extends Fragment
     @Override
     public void onListViewClick(int itemId, String name) {
         mItemId = itemId;
-
-//        if (mTwoPane) {
-//
-//        }
-//        else {
-//            Intent editGroupIntent = new Intent(this, AddGroupActivity.class);
-//            editGroupIntent.putExtra(AddGroupActivity.GROUP_ID_KEY, mItemId);
-//            startActivity(editGroupIntent);
-//        }
     }
 
     @Override
     public void onListViewEditClick(int itemId) {
         mItemId = itemId;
+    }
 
-//        if (mTwoPane) {
-//            FragmentManager fm = getSupportFragmentManager();
-//            AddGroupDialogFragment.newInstance().show(fm, ADD_GROUP_DIALOG_TAG);
-//        }
-//        else {
-//            Intent editGroupIntent = new Intent(this, AddGroupActivity.class);
-//            editGroupIntent.putExtra(AddGroupActivity.GROUP_ID_KEY, mItemId);
-//            startActivity(editGroupIntent);
-//        }
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SERVER_ID_KEY, mServerId);
+        outState.putString(GROUP_FILTER_KEY, mFilter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.group_menu, menu);
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        if (mSearchView != null) {
+            mSearchView.setOnQueryTextListener(this);
+
+            if (!mFilter.isEmpty()) {
+                mDontUpdateFilter = true;
+                MenuItemCompat.expandActionView(searchMenuItem);
+            }
+
+            mSearchView.clearFocus();
+        }
+
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
+        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        if (!mFilter.isEmpty()) {
+            mDontUpdateFilter = false;
+            mSearchView.setQuery(mFilter, true);
+        }
+
     }
 }

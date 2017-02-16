@@ -85,13 +85,15 @@ public class GroupPresenterImpl implements GroupPresenter {
     }
 
     @Override
-    public String getSubscribedGroupsSelection() {
-        return null;
+    public String getSubscribedGroupsSelection(int serverId) {
+        return mGroupSelection + serverId + " AND "
+                + GroupEntry.COLUMN_NAME_SUBSCRIBED + " = 1";
     }
 
     @Override
-    public String getUnsubscribedGroupsSelection() {
-        return null;
+    public String getUnsubscribedGroupsSelection(int serverId) {
+        return mGroupSelection + serverId + " AND "
+                + GroupEntry.COLUMN_NAME_SUBSCRIBED + " = 0";
     }
 
     @Override

@@ -23,8 +23,8 @@ public interface GroupPresenter {
     String getLoaderOrder();
     String getLoaderUriString();
     void updateGroupList(int serverId);
-    String getSubscribedGroupsSelection();
-    String getUnsubscribedGroupsSelection();
+    String getSubscribedGroupsSelection(int serverId);
+    String getUnsubscribedGroupsSelection(int serverId);
     void updateNotSuccessful();
     void updateSuccessful(int serverId);
     void onPause();

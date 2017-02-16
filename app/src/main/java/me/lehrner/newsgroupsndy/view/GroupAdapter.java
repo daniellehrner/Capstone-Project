@@ -132,11 +132,13 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
 
     @Override
     public void onBindViewHolder(GroupAdapterViewHolder holder, int position) {
-        mCursor.moveToPosition(position);
-        String groupName = mCursor.getString(
-                mCursor.getColumnIndex(GroupEntry.COLUMN_NAME_GROUP_NAME));
+        if (!mCursor.isClosed()) {
+            mCursor.moveToPosition(position);
+            String groupName = mCursor.getString(
+                    mCursor.getColumnIndex(GroupEntry.COLUMN_NAME_GROUP_NAME));
 
-        holder.mGroupName.setText(groupName);
+            holder.mGroupName.setText(groupName);
+        }
     }
 
     @Override

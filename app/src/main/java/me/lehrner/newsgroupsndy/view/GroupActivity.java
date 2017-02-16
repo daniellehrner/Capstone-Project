@@ -19,7 +19,10 @@ package me.lehrner.newsgroupsndy.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 
 import butterknife.OnClick;
@@ -35,6 +38,7 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
     public static final String SERVER_NAME = "serverNameKey";
     private int mServerId;
     private String mServerName;
+    private GroupFragment mGroupFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +59,12 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        GroupFragment groupFragment = GroupFragment.newInstance(mServerId);
-        getSupportFragmentManager().beginTransaction().
-                add(R.id.group_fragment_container, groupFragment).
-                commit();
+        if (savedInstanceState == null) {
+            mGroupFragment = GroupFragment.newInstance(mServerId);
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.group_fragment_container, mGroupFragment).
+                    commit();
+        }
     }
 
     @SuppressWarnings("unused")
@@ -90,6 +96,7 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
         outState.putInt(SERVER_ID_KEY, mServerId);
         outState.putString(SERVER_NAME, mServerName);
     }

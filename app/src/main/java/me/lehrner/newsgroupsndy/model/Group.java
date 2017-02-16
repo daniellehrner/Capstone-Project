@@ -23,11 +23,13 @@ public final class Group {
     private final int mId;
     private final String mGroupName;
     private final int mServerId;
+    private final int mSubscribed;
 
-    public Group(int id, @NonNull String groupName, int serverId) {
+    public Group(int id, @NonNull String groupName, int serverId, int subscribed) {
         mId = id;
         mGroupName = groupName;
         mServerId = serverId;
+        mSubscribed = subscribed;
     }
 
     public int getId() {
@@ -42,12 +44,17 @@ public final class Group {
         return mServerId;
     }
 
+    public int getSubscribed() {
+        return mSubscribed;
+    }
+
     @Override
     public String toString() {
         return "Group{" +
                 "Id=" + mId +
                 ", GroupName='" + mGroupName + '\'' +
                 ", ServerId=" + mServerId +
+                ", Subscribed=" + mSubscribed +
                 '}';
     }
 

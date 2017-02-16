@@ -60,9 +60,8 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public GroupRepository provideGroupRepository(Context context,
-                                                  ServerRepository serverRepository) {
-        return new ContentProviderGroupRepositoryImpl(context, serverRepository);
+    public GroupRepository provideGroupRepository(Context context) {
+        return new ContentProviderGroupRepositoryImpl(context);
     }
 
     @Provides

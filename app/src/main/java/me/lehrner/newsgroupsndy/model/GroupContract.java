@@ -26,6 +26,7 @@ public class GroupContract {
         public static final String TABLE_NAME = "newsgroup";
         public static final String COLUMN_NAME_GROUP_NAME = "name";
         public static final String COLUMN_NAME_SERVER_ID = "server_id";
+        public static final String COLUMN_NAME_SUBSCRIBED = "subscribed";
 
         public static final String GROUP_URI_STRING = "content://"
                 + "me.lehrner.newsgroupsndy.provider/" + TABLE_NAME;

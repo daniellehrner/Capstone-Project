@@ -20,6 +20,7 @@ public class GroupFactory {
     private int mId;
     private String mGroupName;
     private int mServerId;
+    private int mSubscribed;
 
     private GroupFactory() {}
 
@@ -42,9 +43,15 @@ public class GroupFactory {
         return this;
     }
 
+    public GroupFactory withSubscribed(int subscribed) {
+        this.mSubscribed = subscribed;
+        return this;
+    }
+
     public Group build() {
         return new Group(this.mId,
                 this.mGroupName,
-                this.mServerId);
+                this.mServerId,
+                this.mSubscribed);
     }
 }

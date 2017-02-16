@@ -24,7 +24,7 @@ import me.lehrner.newsgroupsndy.model.ServerContract.ServerEntry;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
     private static final String DATABASE_NAME = "Server.db";
 
     private static final String TEXT_TYPE = " TEXT";
@@ -45,7 +45,8 @@ public class DbHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + GroupEntry.TABLE_NAME + " (" +
                     GroupEntry._ID + " INTEGER PRIMARY KEY," +
                     GroupEntry.COLUMN_NAME_GROUP_NAME + TEXT_TYPE + COMMA_SEP +
-                    GroupEntry.COLUMN_NAME_SERVER_ID + INT_TYPE +
+                    GroupEntry.COLUMN_NAME_SERVER_ID + INT_TYPE + COMMA_SEP +
+                    GroupEntry.COLUMN_NAME_SUBSCRIBED + INT_TYPE + " DEFAULT 0" +
             " )";
 
     private static final String SQL_DELETE_SERVER =

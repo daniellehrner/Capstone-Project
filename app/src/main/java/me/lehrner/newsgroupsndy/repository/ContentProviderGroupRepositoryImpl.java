@@ -33,11 +33,9 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
     private final String LOG_TAG = this.getClass().getSimpleName();
 
     private final Context mContext;
-    private final ServerRepository mServerRepository;
 
-    public ContentProviderGroupRepositoryImpl(Context context, ServerRepository serverRepository) {
+    public ContentProviderGroupRepositoryImpl(Context context) {
         mContext = context;
-        mServerRepository = serverRepository;
     }
 
     @Override
@@ -75,6 +73,7 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
         String[] projection = {
                 GroupEntry.COLUMN_NAME_GROUP_NAME,
                 GroupEntry.COLUMN_NAME_SERVER_ID,
+                GroupEntry.COLUMN_NAME_SUBSCRIBED
         };
         String selection = GroupEntry._ID + " = ?";
         String[] selectionArgs = {String.valueOf(id)};
@@ -93,6 +92,8 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
                     serverCursor.getColumnIndex(GroupEntry.COLUMN_NAME_GROUP_NAME));
             int serverId = serverCursor.getInt(
                     serverCursor.getColumnIndex(GroupEntry.COLUMN_NAME_SERVER_ID));
+            int subscribed = serverCursor.getInt(
+                    serverCursor.getColumnIndex(GroupEntry.COLUMN_NAME_SUBSCRIBED));
 
             serverCursor.close();
 
@@ -100,6 +101,7 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
                     withId(id).
                     withGroupName(groupName).
                     withServerId(serverId).
+                    withSubscribed(subscribed).
                     build();
         }
 
