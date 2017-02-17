@@ -16,6 +16,7 @@
 
 package me.lehrner.newsgroupsndy.view;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +47,7 @@ import me.lehrner.newsgroupsndy.view.interfaces.ListViewClickListener;
 
 public class GroupFragment extends Fragment
         implements SearchView.OnQueryTextListener, LoaderManager.LoaderCallbacks<Cursor>,
-        ListViewClickListener {
+        View.OnClickListener, ListViewClickListener {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final int GROUP_LOADER = 1;
@@ -58,8 +60,6 @@ public class GroupFragment extends Fragment
     private GroupAdapter mGroupAdapter;
     private int mItemId = AddGroupView.GROUP_ID_NOT_SET;
     private String mFilter = "";
-    private SearchView mSearchView;
-    private boolean mDontUpdateFilter = false;
 
     @BindView(R.id.group_list)
     RecyclerView mGroupListView;
@@ -141,15 +141,13 @@ public class GroupFragment extends Fragment
 
     @Override
     public boolean onQueryTextChange(String s) {
-        if (!mDontUpdateFilter) {
-            if (s.length() > 1) {
-                mFilter = s;
-                mGroupAdapter.filter(mServerId, s);
-            } else {
-                if (!mFilter.isEmpty()) {
-                    mFilter = "";
-                    mGroupAdapter.resetFilter(mServerId);
-                }
+        if (s.length() > 1) {
+            mFilter = s;
+            mGroupAdapter.filter(mServerId, s);
+        } else {
+            if (!mFilter.isEmpty()) {
+                mFilter = "";
+                mGroupAdapter.resetFilter(mServerId);
             }
         }
 
@@ -215,17 +213,15 @@ public class GroupFragment extends Fragment
         inflater.inflate(R.menu.group_menu, menu);
 
         final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
 
-        if (mSearchView != null) {
-            mSearchView.setOnQueryTextListener(this);
+        if (searchView != null) {
 
             if (!mFilter.isEmpty()) {
-                mDontUpdateFilter = true;
                 MenuItemCompat.expandActionView(searchMenuItem);
             }
 
-            mSearchView.clearFocus();
+            searchView.clearFocus();
         }
 
     }
@@ -235,12 +231,23 @@ public class GroupFragment extends Fragment
         super.onPrepareOptionsMenu(menu);
 
         final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
-        mSearchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        searchView.setOnQueryTextListener(this);
 
         if (!mFilter.isEmpty()) {
-            mDontUpdateFilter = false;
-            mSearchView.setQuery(mFilter, true);
+            searchView.setQuery(mFilter, true);
         }
+    }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.fab:
+                startActivity(new Intent(getActivity(), AddGroupActivity.class));
+                break;
+            default:
+                Log.e(LOG_TAG, "Unknown button clicke with id: " + view.getId());
+        }
     }
 }

@@ -16,16 +16,14 @@
 
 package me.lehrner.newsgroupsndy.view;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.View;
+import android.util.Log;
 
-import butterknife.OnClick;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
@@ -36,14 +34,19 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
     private static final String ADD_GROUP_DIALOG_TAG = "ADD_GROUP_DIALOG_TAG";
     public static final String SERVER_ID_KEY = "serverIdKey";
     public static final String SERVER_NAME = "serverNameKey";
+    public static final String FRAGMENT_TAG = "groupFragmentTag";
     private int mServerId;
     private String mServerName;
-    private GroupFragment mGroupFragment;
+
+    @BindView(R.id.fab)
+    FloatingActionButton mFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+
+        ButterKnife.bind(this);
 
         if (savedInstanceState == null) {
             mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
@@ -57,20 +60,26 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle(mServerName);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        try {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+        catch (NullPointerException e) {
+            Log.e(LOG_TAG, "getSupportActionBar() returned null");
+        }
 
         if (savedInstanceState == null) {
-            mGroupFragment = GroupFragment.newInstance(mServerId);
+            GroupFragment groupFragment = GroupFragment.newInstance(mServerId);
             getSupportFragmentManager().beginTransaction().
-                    replace(R.id.group_fragment_container, mGroupFragment).
+                    replace(R.id.group_fragment_container, groupFragment, FRAGMENT_TAG).
                     commit();
+            mFab.setOnClickListener(groupFragment);
         }
-    }
-
-    @SuppressWarnings("unused")
-    @OnClick(R.id.fab)
-    public void onFabClick(View view) {
-        startActivity(new Intent(this, AddGroupActivity.class));
+        else {
+            GroupFragment groupFragment = (GroupFragment) getSupportFragmentManager().
+                    findFragmentByTag(FRAGMENT_TAG);
+            mFab.setOnClickListener(groupFragment);
+        }
     }
 
 //    @SuppressWarnings("unused")
