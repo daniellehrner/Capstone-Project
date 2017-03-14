@@ -18,20 +18,25 @@ package me.lehrner.newsgroupsndy.view;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.app.SearchManager;
-import android.content.Context;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.SearchView;
 
 import javax.inject.Inject;
 
@@ -40,38 +45,57 @@ import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.NDYApplication;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
-import me.lehrner.newsgroupsndy.view.interfaces.AddGroupClickHandler;
 import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
-import me.lehrner.newsgroupsndy.view.interfaces.GetGroupId;
-import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 
 public class AddGroupDialogFragment extends AppCompatDialogFragment
-                                    implements AddGroupView,
-        AddGroupClickHandler,
-                                        SearchView.OnQueryTextListener{
+        implements AddGroupView, android.support.v7.widget.SearchView.OnQueryTextListener,
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
-    private static final int ADD_GROUP_LOADER = 0;
+    private static final int ADD_GROUP_LOADER = 2;
+    private static final int NO_SERVER_ID = -1;
+    public static final String SERVER_ID_KEY = "serverIdKey";
+    public static final String GROUP_FILTER_KEY = "groupFilterKey";
 
     @Inject
     GroupPresenter mGroupPresenter;
-    GetGroupId mGetGroupId;
-    GetServerId mGetServerId;
-    View mView;
 
-    @BindView(R.id.search_add_group)
-    SearchView mSearchView;
+    private String mFilter = "";
+    private AddGroupAdapter mAddGroupAdapter;
+    private int mServerId;
 
-    @BindView(R.id.add_group_list)
+    @BindView(R.id.add_group_subscribed)
     RecyclerView mGroupListView;
-
 
     public AddGroupDialogFragment() {
         // Required empty public constructor
     }
 
-    public static AddGroupDialogFragment newInstance() {
-        return new AddGroupDialogFragment();
+    public static AddGroupDialogFragment newInstance(int serverId) {
+        AddGroupDialogFragment fragment = new AddGroupDialogFragment();
+
+        Bundle args = new Bundle();
+        args.putInt(SERVER_ID_KEY, serverId);
+        fragment.setArguments(args);
+
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
+
+        if (savedInstanceState == null) {
+            mServerId = getArguments() != null ? getArguments().getInt(SERVER_ID_KEY) : NO_SERVER_ID;
+        }
+        else {
+            mServerId = savedInstanceState.getInt(SERVER_ID_KEY);
+            mFilter = savedInstanceState.getString(GROUP_FILTER_KEY);
+        }
+
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -79,26 +103,25 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
                              Bundle savedInstanceState) {
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        mView = inflater.inflate(R.layout.fragment_add_group_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_group_dialog, container, false);
 
-        ButterKnife.bind(this, mView);
-
-        SearchManager searchManager = (SearchManager)
-                getActivity().getSystemService(Context.SEARCH_SERVICE);
-
-        mSearchView.setSearchableInfo(searchManager.
-                getSearchableInfo(getActivity().getComponentName()));
-        mSearchView.setOnQueryTextListener(this);
-        mSearchView.setIconifiedByDefault(false);
-
-//        getActivity().getSupportLoaderManager().initLoader(ADD_GROUP_LOADER, null, this);
+        ButterKnife.bind(this, view);
 
         mGroupListView.setHasFixedSize(true);
 
-//        mGroupAdapter = new GroupAdapter();
-//        mGroupListView.setAdapter(mGroupAdapter);
+        return view;
+    }
 
-        return mView;
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mAddGroupAdapter = new AddGroupAdapter(this, mGroupPresenter);
+        mGroupListView.setAdapter(mAddGroupAdapter);
+
+        if (mFilter.isEmpty()) {
+            getActivity().getSupportLoaderManager().initLoader(ADD_GROUP_LOADER, null, this);
+        }
     }
 
     @SuppressLint("InflateParams")
@@ -119,22 +142,6 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
     }
 
     @Override
-    public int getGroupId() {
-        return mGetGroupId.getGroupId();
-    }
-
-    @Override
-    public String getGroupName() {
-//        return getStringFromAutoCompleteText(R.id.text_group_name);
-        return null;
-    }
-
-    @Override
-    public int getServerId() {
-        return mGetServerId.getServerId();
-    }
-
-    @Override
     public void closeAddGroupView() {
         Dialog dialog = getDialog();
 
@@ -147,50 +154,97 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
     }
 
     @Override
-    public void onGroupSave() {
-    }
-
-    private String getStringFromAutoCompleteText(int viewId) {
-        AutoCompleteTextView groupText;
-
-        Dialog dialog = getDialog();
-
-        if (dialog != null) {
-            groupText = (AutoCompleteTextView) dialog.findViewById(viewId);
-        }
-        else {
-            groupText = (AutoCompleteTextView) getActivity().findViewById(viewId);
-        }
-
-        return groupText.getText().toString();
-    }
-
-    @Override
-    public void onAttach (Context context) {
-        super.onAttach(context);
-
-        try {
-            mGetGroupId = (GetGroupId) context;
-        }
-        catch (ClassCastException e) {
-            Log.e(LOG_TAG, "Context doesn't implement GetGroupId: " + e.toString());
-        }
-
-        try {
-            mGetServerId = (GetServerId) context;
-        }
-        catch (ClassCastException e) {
-            Log.e(LOG_TAG, "Context doesn't implement GetServerId: " + e.toString());
-        }
-    }
-
-    @Override
     public boolean onQueryTextSubmit(String s) {
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
+        if (s.length() > 1) {
+            mFilter = s;
+            mAddGroupAdapter.filter(mServerId, s);
+            mGroupListView.scrollToPosition(0);
+        } else {
+            if (!mFilter.isEmpty()) {
+                mFilter = "";
+                mAddGroupAdapter.resetFilter(mServerId);
+                mGroupListView.scrollToPosition(0);
+            }
+        }
+
         return false;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int loaderID, Bundle args) {
+        switch (loaderID) {
+            case ADD_GROUP_LOADER:
+                Uri groupUri = Uri.parse(mGroupPresenter.getLoaderUriString());
+
+                return new CursorLoader(
+                        getContext(),
+                        groupUri,
+                        mGroupPresenter.getLoaderProjection(),
+                        mGroupPresenter.getLoaderSelection(mServerId),
+                        null,
+                        mGroupPresenter.getLoaderOrder()
+                );
+            default:
+                // An invalid id was passed in
+                return null;
+        }
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (mAddGroupAdapter != null) {
+            mAddGroupAdapter.swapCursor(data);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        if (mAddGroupAdapter != null) {
+            mAddGroupAdapter.swapCursor(null);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(SERVER_ID_KEY, mServerId);
+        outState.putString(GROUP_FILTER_KEY, mFilter);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+
+        inflater.inflate(R.menu.group_search_menu, menu);
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        if (searchView != null) {
+            if (!mFilter.isEmpty()) {
+                MenuItemCompat.expandActionView(searchMenuItem);
+            }
+
+            searchView.clearFocus();
+        }
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
+
+        searchView.setOnQueryTextListener(this);
+
+        if (!mFilter.isEmpty()) {
+            searchView.setQuery(mFilter, true);
+        }
     }
 }

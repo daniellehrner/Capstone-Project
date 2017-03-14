@@ -19,11 +19,13 @@ package me.lehrner.newsgroupsndy.repository;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.util.Log;
 
 import java.util.ArrayList;
 
+import me.lehrner.newsgroupsndy.model.DbHelper;
 import me.lehrner.newsgroupsndy.model.Group;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.model.GroupFactory;
@@ -55,16 +57,31 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
     public boolean saveGroups(int serverId, ArrayList<String> groupNames) {
         Log.d(LOG_TAG, "Saving " + groupNames.size() + " groups");
 
-        boolean saveSuccess = true;
+        DbHelper dbHelper = new DbHelper(mContext);
 
-        for (String groupName : groupNames) {
-            if (!saveGroup(groupName, serverId)) {
-                saveSuccess = false;
-                break;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        db.beginTransaction();
+
+        try {
+            for (String groupName : groupNames) {
+                ContentValues values = new ContentValues();
+
+                values.put(GroupEntry.COLUMN_NAME_GROUP_NAME, groupName);
+                values.put(GroupEntry.COLUMN_NAME_SERVER_ID, serverId);
+
+                db.insert(GroupEntry.TABLE_NAME, null, values);
             }
+
+            db.setTransactionSuccessful();
+        }
+        finally {
+            db.endTransaction();
         }
 
-        return saveSuccess;
+        db.close();
+
+        return true;
     }
 
     private Group getGroupFromContentProvider(int id) {
@@ -130,5 +147,28 @@ public class ContentProviderGroupRepositoryImpl implements GroupRepository {
         );
 
         return numberOfDeletedRows != 0;
+    }
+
+    @Override
+    public void subscribe(int groupId) {
+        setSubscribed(groupId, SUBSCRIBED);
+    }
+
+    @Override
+    public void unsubscribe(int groupId) {
+        setSubscribed(groupId, NOT_SUBSCRIBED);
+    }
+
+    private void setSubscribed(int groupId, int value) {
+        ContentValues values = new ContentValues();
+
+        values.put(GroupEntry.COLUMN_NAME_SUBSCRIBED, value);
+
+        mContext.getContentResolver().update(
+                Uri.parse(GroupEntry.GROUP_URI_STRING),
+                values,
+                GroupEntry._ID + " = ?",
+                new String[]{String.valueOf(groupId)}
+        );
     }
 }

@@ -16,7 +16,6 @@
 
 package me.lehrner.newsgroupsndy.model;
 
-import android.content.ContentResolver;
 import android.provider.BaseColumns;
 
 public class GroupContract {

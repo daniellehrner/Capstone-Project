@@ -17,14 +17,12 @@
 package me.lehrner.newsgroupsndy.presenter;
 
 public interface GroupPresenter {
-    void subscribeToGroup(int id);
-    void unsubscribeFromGroup(int id);
+    void toggleSubscribe(int id);
     String[] getLoaderProjection();
     String getLoaderOrder();
     String getLoaderUriString();
     void updateGroupList(int serverId);
     String getSubscribedGroupsSelection(int serverId);
-    String getUnsubscribedGroupsSelection(int serverId);
     void updateNotSuccessful();
     void updateSuccessful(int serverId);
     void onPause();

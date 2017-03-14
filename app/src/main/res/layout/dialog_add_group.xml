@@ -31,19 +31,5 @@
         android:gravity="center_horizontal"
         android:layout_centerVertical="true"
         android:layout_centerHorizontal="true"
-        android:layout_toEndOf="@id/add_group_close"
-        android:layout_toStartOf="@+id/add_group_save"/>
-
-    <Button
-        android:layout_width="50dp"
-        android:layout_height="wrap_content"
-        android:text="@string/save"
-        android:gravity="end|center"
-        android:textAppearance="?android:attr/textAppearanceButton"
-        android:background="?attr/selectableItemBackground"
-        android:textColor="@android:color/white"
-        android:id="@+id/add_group_save"
-        android:onClick="onAddGroupSave"
-        android:layout_centerVertical="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_toEndOf="@id/add_group_close"/>
 </RelativeLayout>

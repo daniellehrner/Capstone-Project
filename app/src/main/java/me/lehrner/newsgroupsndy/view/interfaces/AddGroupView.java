@@ -19,9 +19,5 @@ package me.lehrner.newsgroupsndy.view.interfaces;
 public interface AddGroupView {
     int GROUP_ID_NOT_SET = -1;
 
-    int getGroupId();
-    String getGroupName();
-    int getServerId();
-
     void closeAddGroupView();
 }

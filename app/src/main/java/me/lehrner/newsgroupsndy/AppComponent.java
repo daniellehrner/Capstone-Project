@@ -19,6 +19,8 @@ package me.lehrner.newsgroupsndy;
 import javax.inject.Singleton;
 
 import dagger.Component;
+import me.lehrner.newsgroupsndy.view.AddGroupActivity;
+import me.lehrner.newsgroupsndy.view.AddGroupAdapter.AddGroupAdapterViewHolder;
 import me.lehrner.newsgroupsndy.view.AddGroupDialogFragment;
 import me.lehrner.newsgroupsndy.view.AddServerDialogFragment;
 import me.lehrner.newsgroupsndy.view.GroupActivity;
@@ -37,4 +39,5 @@ public interface AppComponent {
     void inject(GroupActivity target);
     void inject(GroupAdapterViewHolder target);
     void inject(GroupFragment target);
+    void inject(AddGroupAdapterViewHolder target);
 }

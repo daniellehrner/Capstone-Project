@@ -17,90 +17,68 @@
 package me.lehrner.newsgroupsndy.view;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 
-import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.R;
-import me.lehrner.newsgroupsndy.view.interfaces.AddGroupClickHandler;
-import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
-import me.lehrner.newsgroupsndy.view.interfaces.GetGroupId;
+import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 
-public class AddGroupActivity extends AppCompatActivity implements GetGroupId {
-    private final String LOG_TAG = this.getClass().getSimpleName();
-    public static final String GROUP_ID_KEY = "groupIdKey";
+public class AddGroupActivity extends AppCompatActivity {
+    public static final String FRAGMENT_TAG = "addGroupFragmentTag";
+    public static final String SERVER_ID_KEY = "serverIdKey";
 
-    private AddGroupClickHandler mGroupClickHandler;
-    private int mGroupId;
+    private int mServerId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ButterKnife.bind(this);
 
         setContentView(R.layout.activity_save_group);
+
+        if (savedInstanceState == null) {
+            mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
+        }
+        else {
+            mServerId = savedInstanceState.getInt(SERVER_ID_KEY);
+        }
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp);
         }
+
+        AddGroupDialogFragment addGroupFragment;
 
         if (savedInstanceState == null) {
-            mGroupId = getIntent().getIntExtra(GROUP_ID_KEY, AddGroupView.GROUP_ID_NOT_SET);
+            addGroupFragment = AddGroupDialogFragment.newInstance(mServerId);
+            getSupportFragmentManager().beginTransaction().
+                    replace(R.id.add_group_fragment_container, addGroupFragment, FRAGMENT_TAG).
+                    commit();
         }
         else {
-            mGroupId = savedInstanceState.getInt(GROUP_ID_KEY);
+            addGroupFragment = (AddGroupDialogFragment) getSupportFragmentManager().
+                    findFragmentByTag(FRAGMENT_TAG);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.add_group_menu, menu);
-        return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_add_group:
-                if (mGroupClickHandler != null) {
-                    mGroupClickHandler.onGroupSave();
-                }
+            case android.R.id.home:
+                finish();
                 return true;
-
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
     @Override
-    public void onAttachFragment(Fragment fragment) {
-        try {
-            mGroupClickHandler = (AddGroupClickHandler) fragment;
-        }
-        catch (ClassCastException e) {
-            Log.e(LOG_TAG, "Fragment doesn't implement AddGroupClickHandler: " + e.toString());
-        }
-    }
-
-    @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(GROUP_ID_KEY, mGroupId);
-    }
-
-    @Override
-    public int getGroupId() {
-        return mGroupId;
+        outState.putInt(SERVER_ID_KEY, mServerId);
     }
 }

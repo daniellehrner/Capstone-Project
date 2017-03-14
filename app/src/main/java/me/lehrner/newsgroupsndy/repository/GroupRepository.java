@@ -22,7 +22,12 @@ import java.util.ArrayList;
 import me.lehrner.newsgroupsndy.model.Group;
 
 public interface GroupRepository {
+    int NOT_SUBSCRIBED = 0;
+    int SUBSCRIBED = 1;
+
     Group getGroup(int id);
     boolean saveGroups(int serverId, ArrayList<String> groupNames);
     boolean deleteGroupsOfServer(int serverId);
+    void subscribe(int groupId);
+    void unsubscribe(int groupId);
 }

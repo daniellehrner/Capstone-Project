@@ -18,8 +18,10 @@ package me.lehrner.newsgroupsndy.presenter;
 
 import android.util.Log;
 
+import me.lehrner.newsgroupsndy.model.Group;
 import me.lehrner.newsgroupsndy.model.GroupContract.GroupEntry;
 import me.lehrner.newsgroupsndy.model.Server;
+import me.lehrner.newsgroupsndy.presenter.tasks.SubscribeGroupAsyncTask;
 import me.lehrner.newsgroupsndy.repository.GroupRepository;
 import me.lehrner.newsgroupsndy.repository.ServerRepository;
 import me.lehrner.newsgroupsndy.presenter.tasks.UpdateGroupListAsyncTask;
@@ -36,7 +38,8 @@ public class GroupPresenterImpl implements GroupPresenter {
             " COLLATE NOCASE";
     private static final String[] mLoaderProjection = {
             GroupEntry._ID,
-            GroupEntry.COLUMN_NAME_GROUP_NAME
+            GroupEntry.COLUMN_NAME_GROUP_NAME,
+            GroupEntry.COLUMN_NAME_SUBSCRIBED
     };
 
     private static final String mGroupSelection = GroupEntry.COLUMN_NAME_SERVER_ID +
@@ -49,13 +52,11 @@ public class GroupPresenterImpl implements GroupPresenter {
     }
 
     @Override
-    public void subscribeToGroup(int id) {
+    public void toggleSubscribe(int id) {
+        Group group = mGroupRepository.getGroup(id);
 
-    }
-
-    @Override
-    public void unsubscribeFromGroup(int id) {
-//        mGroupRepository.deleteGroup(id);
+        SubscribeGroupAsyncTask subscribeTask = new SubscribeGroupAsyncTask(mGroupRepository);
+        subscribeTask.execute(group);
     }
 
     @Override
@@ -88,12 +89,6 @@ public class GroupPresenterImpl implements GroupPresenter {
     public String getSubscribedGroupsSelection(int serverId) {
         return mGroupSelection + serverId + " AND "
                 + GroupEntry.COLUMN_NAME_SUBSCRIBED + " = 1";
-    }
-
-    @Override
-    public String getUnsubscribedGroupsSelection(int serverId) {
-        return mGroupSelection + serverId + " AND "
-                + GroupEntry.COLUMN_NAME_SUBSCRIBED + " = 0";
     }
 
     @Override

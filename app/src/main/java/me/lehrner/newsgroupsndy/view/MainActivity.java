@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.fab)
+    @OnClick(R.id.fab_server)
     public void onFabClick(View view) {
         if (mTwoPane) {
             FragmentManager fm = getSupportFragmentManager();

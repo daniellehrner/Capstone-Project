@@ -13,8 +13,8 @@
     <string name="new_server">New server</string>
 
     <!-- Group view -->
-    <string name="group_name_title">Subscribe to group</string>
-    <string name="new_group">Subscribe to group</string>
+    <string name="group_name_title">Subscribe to groups</string>
+    <string name="new_group">Subscribe to groups</string>
 
     <!-- Buttons -->
     <string name="cancel">Cancel</string>
@@ -28,4 +28,7 @@
     <string name="url_invalid">URL is not valid</string>
     <string name="search">Search</string>
     <string name="search_groups">Search groups</string>
+    <string name="subscribed_groups">Subscribed Groups</string>
+    <string name="not_subscribed">Not subscribed</string>
+    <string name="subscribed">Subscribed</string>
 </resources>

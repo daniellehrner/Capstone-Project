@@ -71,8 +71,7 @@ public class ServerAdapter extends RecyclerView.Adapter<ServerAdapter.ServerAdap
                     mSelectedPosition = getLayoutPosition();
                     notifyItemChanged(mSelectedPosition);
 
-                    Log.d(LOG_TAG, "Text: " + mCursor.getString(
-                            mCursor.getColumnIndex(ServerEntry.COLUMN_NAME_SERVER_NAME)));
+
                     mListViewClickListener.onListViewClick(
                             mCursor.getInt(
                             mCursor.getColumnIndex(ServerEntry._ID)),

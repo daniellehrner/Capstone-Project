@@ -1,3 +1,4 @@
+package me.lehrner.newsgroupsndy.view.interfaces;
 /*
  * Copyright (C) 2017 Daniel Lehrner
  *
@@ -14,8 +15,8 @@
  * limitations under the License.
  */
 
-package me.lehrner.newsgroupsndy.view.interfaces;
+import android.content.Context;
 
-public interface AddGroupClickHandler {
-    void onGroupSave();
+public interface GroupAdapterHandler {
+    Context getContext();
 }

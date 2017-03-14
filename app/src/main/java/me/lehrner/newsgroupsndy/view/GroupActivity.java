@@ -22,8 +22,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
@@ -31,22 +29,16 @@ import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 public class GroupActivity extends AppCompatActivity implements GetServerId {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
-    private static final String ADD_GROUP_DIALOG_TAG = "ADD_GROUP_DIALOG_TAG";
     public static final String SERVER_ID_KEY = "serverIdKey";
     public static final String SERVER_NAME = "serverNameKey";
     public static final String FRAGMENT_TAG = "groupFragmentTag";
     private int mServerId;
     private String mServerName;
 
-    @BindView(R.id.fab)
-    FloatingActionButton mFab;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
-
-        ButterKnife.bind(this);
 
         if (savedInstanceState == null) {
             mServerId = getIntent().getIntExtra(SERVER_ID_KEY, AddServerView.SERVER_ID_NOT_SET);
@@ -68,34 +60,27 @@ public class GroupActivity extends AppCompatActivity implements GetServerId {
             Log.e(LOG_TAG, "getSupportActionBar() returned null");
         }
 
+        GroupFragment groupFragment;
+
         if (savedInstanceState == null) {
-            GroupFragment groupFragment = GroupFragment.newInstance(mServerId);
+            groupFragment = GroupFragment.newInstance(mServerId);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.group_fragment_container, groupFragment, FRAGMENT_TAG).
                     commit();
-            mFab.setOnClickListener(groupFragment);
         }
         else {
-            GroupFragment groupFragment = (GroupFragment) getSupportFragmentManager().
+            groupFragment = (GroupFragment) getSupportFragmentManager().
                     findFragmentByTag(FRAGMENT_TAG);
-            mFab.setOnClickListener(groupFragment);
+        }
+
+        if (groupFragment != null) {
+            FloatingActionButton fabAddGroup = (FloatingActionButton) findViewById(R.id.fab_group);
+
+            if (fabAddGroup != null) {
+                fabAddGroup.setOnClickListener(groupFragment);
+            }
         }
     }
-
-//    @SuppressWarnings("unused")
-//    public void onAddGroupSave(View view) {
-//        if (mGroupClickHandler != null) {
-//            mGroupClickHandler.onGroupSave();
-//        }
-//    }
-//
-//    @SuppressWarnings("unused")
-//    public void onAddGroupCancel(View view) {
-//        FragmentManager fm = getSupportFragmentManager();
-//        AddGroupDialogFragment addGroupDialogFragment =
-//                (AddGroupDialogFragment) fm.findFragmentByTag(ADD_GROUP_DIALOG_TAG);
-//        addGroupDialogFragment.getDialog().cancel();
-//    }
 
     @Override
     public int getServerId() {

@@ -18,6 +18,7 @@ package me.lehrner.newsgroupsndy;
 
 import android.app.Application;
 
+import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
 
 public class NDYApplication extends Application {
@@ -31,6 +32,7 @@ public class NDYApplication extends Application {
 
         component = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
         LeakCanary.install(this);
+        Stetho.initializeWithDefaults(this);
     }
 
     public AppComponent getComponent() {

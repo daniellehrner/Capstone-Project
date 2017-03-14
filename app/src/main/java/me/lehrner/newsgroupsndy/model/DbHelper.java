@@ -46,7 +46,9 @@ public class DbHelper extends SQLiteOpenHelper {
                     GroupEntry._ID + " INTEGER PRIMARY KEY," +
                     GroupEntry.COLUMN_NAME_GROUP_NAME + TEXT_TYPE + COMMA_SEP +
                     GroupEntry.COLUMN_NAME_SERVER_ID + INT_TYPE + COMMA_SEP +
-                    GroupEntry.COLUMN_NAME_SUBSCRIBED + INT_TYPE + " DEFAULT 0" +
+                    GroupEntry.COLUMN_NAME_SUBSCRIBED + INT_TYPE + " DEFAULT 0," +
+                    " UNIQUE(" + GroupEntry.COLUMN_NAME_SERVER_ID + ", "
+                        + GroupEntry.COLUMN_NAME_GROUP_NAME + ") ON CONFLICT IGNORE" +
             " )";
 
     private static final String SQL_DELETE_SERVER =

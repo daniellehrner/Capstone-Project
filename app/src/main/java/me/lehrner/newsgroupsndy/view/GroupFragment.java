@@ -164,7 +164,7 @@ public class GroupFragment extends Fragment
                     getContext(),
                     groupUri,
                     mGroupPresenter.getLoaderProjection(),
-                    mGroupPresenter.getLoaderSelection(mServerId),
+                    mGroupPresenter.getSubscribedGroupsSelection(mServerId),
                     null,
                     mGroupPresenter.getLoaderOrder()
                 );
@@ -172,7 +172,6 @@ public class GroupFragment extends Fragment
                 // An invalid id was passed in
                 return null;
         }
-
     }
 
     @Override
@@ -210,7 +209,7 @@ public class GroupFragment extends Fragment
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
 
-        inflater.inflate(R.menu.group_menu, menu);
+        inflater.inflate(R.menu.group_search_menu, menu);
 
         final MenuItem searchMenuItem = menu.findItem(R.id.search_group);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchMenuItem);
@@ -243,11 +242,13 @@ public class GroupFragment extends Fragment
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.fab:
-                startActivity(new Intent(getActivity(), AddGroupActivity.class));
+            case R.id.fab_group:
+                Intent addGroupIntent = new Intent(getContext(), AddGroupActivity.class);
+                addGroupIntent.putExtra(AddGroupActivity.SERVER_ID_KEY, mServerId);
+                startActivity(addGroupIntent);
                 break;
             default:
-                Log.e(LOG_TAG, "Unknown button clicke with id: " + view.getId());
+                Log.e(LOG_TAG, "Unknown button clicked with id: " + view.getId());
         }
     }
 }
