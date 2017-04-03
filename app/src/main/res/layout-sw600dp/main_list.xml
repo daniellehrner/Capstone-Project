@@ -11,17 +11,34 @@
     android:showDividers="middle"
     tools:context="me.lehrner.newsgroupsndy.view.MainActivity">
 
-    <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/server_list"
-        android:name="me.lehrner.newsgroupsndy.ui.MainFragment"
+    <LinearLayout
         android:layout_width="30dp"
         android:layout_height="match_parent"
+        android:orientation="vertical"
         android:layout_marginLeft="0dp"
         android:layout_marginRight="0dp"
-        android:layout_weight="1"
-        app:layoutManager="LinearLayoutManager"
-        tools:context="me.lehrner.newsgroupsndy.view.MainActivity" />
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/server_list"
+            android:name="me.lehrner.newsgroupsndy.ui.MainFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layoutManager="LinearLayoutManager"
+            tools:context="me.lehrner.newsgroupsndy.view.MainActivity"
+            android:layout_weight="1"/>
+
+        <Button
+            android:id="@+id/add_server"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:text="@string/add_server"
+            android:onClick="onAddServerClick"/>
+
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/groups_fragment_container"

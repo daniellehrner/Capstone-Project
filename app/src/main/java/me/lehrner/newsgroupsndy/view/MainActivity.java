@@ -20,16 +20,20 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -54,8 +58,13 @@ public class MainActivity extends AppCompatActivity
     private static final int SERVER_LOADER = 0;
     private final String LOG_TAG = this.getClass().getSimpleName();
     private static final String ADD_SERVER_DIALOG_TAG = "ADD_SERVER_DIALOG_TAG";
+    private static final String KEY_ITEM_ID = "ndyKeyItemID";
+    private static final String KEY_GROUP_NAME = "ndyKeyGroupName";
 
     @BindView(R.id.server_list) RecyclerView mServerListView;
+
+    @Nullable @BindView(R.id.groups_fragment_container) FrameLayout mGroupContainer;
+    FloatingActionButton mFabMain;
     @Inject ServerPresenter mServerPresenter;
 
     private WeakReference<AddServerClickHandler> mServerClickHandlerWeakReference;
@@ -63,41 +72,88 @@ public class MainActivity extends AppCompatActivity
 
     private boolean mTwoPane = false;
     private int mItemId = AddServerView.SERVER_ID_NOT_SET;
+    private Toolbar mToolbar;
+    private String mGroupName;
+    private ActionBar mActionBar;
+    private boolean mClickItemAfterLoad = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
-
-        ((NDYApplication) getApplication()).getComponent().inject(this);
-        ButterKnife.bind(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        getSupportLoaderManager().initLoader(SERVER_LOADER, null, this);
 
         if (findViewById(R.id.groups_fragment_container) != null) {
             mTwoPane = true;
         }
 
+        if (mTwoPane) {
+            if (savedInstanceState != null) {
+                mItemId = savedInstanceState.getInt(KEY_ITEM_ID);
+                mGroupName = savedInstanceState.getString(KEY_GROUP_NAME);
+
+                if (mItemId != AddServerView.SERVER_ID_NOT_SET) {
+                    mClickItemAfterLoad = true;
+                }
+            }
+        }
+
+        ((NDYApplication) getApplication()).getComponent().inject(this);
+        ButterKnife.bind(this);
+
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        mActionBar = getSupportActionBar();
+
+        getSupportLoaderManager().initLoader(SERVER_LOADER, null, this);
+
         mServerListView.setHasFixedSize(true);
 
         mServerAdapter = new ServerAdapter();
         mServerListView.setAdapter(mServerAdapter);
+
+        if (mTwoPane) {
+            mFabMain = (FloatingActionButton) findViewById(R.id.fab_main);
+            mFabMain.setVisibility(View.GONE);
+        }
     }
 
     @SuppressWarnings("unused")
-    @OnClick(R.id.fab_server)
+    @OnClick(R.id.fab_main)
     public void onFabClick(View view) {
         if (mTwoPane) {
             FragmentManager fm = getSupportFragmentManager();
-            AddServerDialogFragment.newInstance().show(fm, ADD_SERVER_DIALOG_TAG);
-            mItemId = AddServerView.SERVER_ID_NOT_SET;
+            AddGroupFragment addGroupFragment = AddGroupFragment.newInstance(mItemId);
+
+            if (mGroupContainer != null) {
+                mGroupContainer.removeAllViews();
+            }
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.groups_fragment_container, addGroupFragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .addToBackStack(null)
+                    .commit();
+
+            mToolbar.setTitle(
+                    getString(R.string.subscribe_to, mGroupName)
+            );
+
+            if (mActionBar != null) {
+                mActionBar.setDisplayHomeAsUpEnabled(true);
+            }
         }
         else {
             startActivity(new Intent(this, AddServerActivity.class));
         }
+    }
+
+    @SuppressWarnings("unused")
+    public void onAddServerClick(View view) {
+        FragmentManager fm = getSupportFragmentManager();
+        AddServerDialogFragment.newInstance().show(fm, ADD_SERVER_DIALOG_TAG);
+        mItemId = AddServerView.SERVER_ID_NOT_SET;
     }
 
     @SuppressWarnings("unused")
@@ -119,11 +175,12 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAttachFragment(Fragment fragment) {
-        try {
-            mServerClickHandlerWeakReference = new WeakReference<>((AddServerClickHandler) fragment);
-        }
-        catch (ClassCastException e) {
-            Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
+        if (fragment.getClass().getSimpleName().equals("AddServerDialogFragment")) {
+            try {
+                mServerClickHandlerWeakReference = new WeakReference<>((AddServerClickHandler) fragment);
+            } catch (ClassCastException e) {
+                Log.e(LOG_TAG, "Fragment doesn't implement AddServerClickHandler: " + e.toString());
+            }
         }
     }
 
@@ -151,6 +208,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         mServerAdapter.swapCursor(data);
+
+        if (mClickItemAfterLoad && (mItemId != AddServerView.SERVER_ID_NOT_SET)) {
+            onListViewClick(mItemId, mGroupName);
+        }
     }
 
     @Override
@@ -160,31 +221,30 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onListViewClick(int itemId, String name) {
-
+        mGroupName = name;
 
         if (mTwoPane) {
-            if (mItemId == itemId) {
-                return;
-            }
 
             GroupFragment groupFragment = GroupFragment.newInstance(itemId);
 
-            if (mItemId == AddServerView.SERVER_ID_NOT_SET) {
-                getSupportFragmentManager().beginTransaction().
-                        add(R.id.groups_fragment_container, groupFragment).
-                        commit();
+            if (mGroupContainer != null) {
+                mGroupContainer.removeAllViews();
+            }
+
+            if (!mClickItemAfterLoad) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.groups_fragment_container, groupFragment)
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                        .addToBackStack(null)
+                        .commit();
             }
             else {
-                FrameLayout groupsContainer = (FrameLayout) findViewById(R.id.groups_fragment_container);
-                groupsContainer.removeAllViews();
-
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-
-                transaction.replace(R.id.groups_fragment_container, groupFragment);
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
-                transaction.addToBackStack(null);
-                transaction.commit();
+                mClickItemAfterLoad = false;
             }
+
+            mFabMain.setVisibility(View.VISIBLE);
+
+            mToolbar.setTitle(name);
         }
         else {
             Intent groupIntent = new Intent(this, GroupActivity.class);
@@ -214,5 +274,30 @@ public class MainActivity extends AppCompatActivity
     @Override
     public int getServerId() {
         return mItemId;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                getSupportFragmentManager().popBackStackImmediate();
+
+                mToolbar.setTitle(mGroupName);
+
+                if (mActionBar != null) {
+                    mActionBar.setDisplayHomeAsUpEnabled(false);
+                }
+                return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(KEY_ITEM_ID, mItemId);
+        outState.putString(KEY_GROUP_NAME, mGroupName);
     }
 }

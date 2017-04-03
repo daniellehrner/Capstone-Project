@@ -32,7 +32,10 @@ public class NDYApplication extends Application {
 
         component = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
         LeakCanary.install(this);
-        Stetho.initializeWithDefaults(this);
+
+        if (BuildConfig.DEBUG) {
+            Stetho.initializeWithDefaults(this);
+        }
     }
 
     public AppComponent getComponent() {

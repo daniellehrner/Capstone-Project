@@ -40,8 +40,7 @@ import me.lehrner.newsgroupsndy.view.interfaces.AddServerView;
 import me.lehrner.newsgroupsndy.view.interfaces.GetServerId;
 
 public class AddServerDialogFragment extends AppCompatDialogFragment
-                                     implements AddServerView,
-        AddServerClickHandler {
+                                     implements AddServerView, AddServerClickHandler {
 
     private final String LOG_TAG = this.getClass().getSimpleName();
 

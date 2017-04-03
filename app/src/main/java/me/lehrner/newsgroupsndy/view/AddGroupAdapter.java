@@ -39,7 +39,7 @@ import static me.lehrner.newsgroupsndy.repository.GroupRepository.SUBSCRIBED;
 public class AddGroupAdapter extends RecyclerView.Adapter<AddGroupAdapter.AddGroupAdapterViewHolder> {
     private final String LOG_TAG = this.getClass().getSimpleName();
     private Cursor mCursor;
-    private final AddGroupDialogFragment mAddGroupFragment;
+    private final AddGroupFragment mAddGroupFragment;
     private final GroupPresenter mGroupPresenter;
 
     public class AddGroupAdapterViewHolder extends RecyclerView.ViewHolder
@@ -85,7 +85,7 @@ public class AddGroupAdapter extends RecyclerView.Adapter<AddGroupAdapter.AddGro
         }
     }
 
-    public AddGroupAdapter(AddGroupDialogFragment addGroupFragment, GroupPresenter groupPresenter) {
+    public AddGroupAdapter(AddGroupFragment addGroupFragment, GroupPresenter groupPresenter) {
         mAddGroupFragment = addGroupFragment;
         mGroupPresenter = groupPresenter;
     }

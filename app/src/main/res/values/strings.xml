@@ -16,6 +16,9 @@
     <string name="group_name_title">Subscribe to groups</string>
     <string name="new_group">Subscribe to groups</string>
 
+    <!--Add Group View-->
+    <string name="subscribe_to">Subscribe to groups for %1$s</string>
+
     <!-- Buttons -->
     <string name="cancel">Cancel</string>
     <string name="save">Save</string>
@@ -31,4 +34,5 @@
     <string name="subscribed_groups">Subscribed Groups</string>
     <string name="not_subscribed">Not subscribed</string>
     <string name="subscribed">Subscribed</string>
+    <string name="add_server">Add new server</string>
 </resources>

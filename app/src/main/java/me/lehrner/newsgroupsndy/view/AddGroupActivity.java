@@ -51,16 +51,16 @@ public class AddGroupActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
 
-        AddGroupDialogFragment addGroupFragment;
+        AddGroupFragment addGroupFragment;
 
         if (savedInstanceState == null) {
-            addGroupFragment = AddGroupDialogFragment.newInstance(mServerId);
+            addGroupFragment = AddGroupFragment.newInstance(mServerId);
             getSupportFragmentManager().beginTransaction().
                     replace(R.id.add_group_fragment_container, addGroupFragment, FRAGMENT_TAG).
                     commit();
         }
         else {
-            addGroupFragment = (AddGroupDialogFragment) getSupportFragmentManager().
+            addGroupFragment = (AddGroupFragment) getSupportFragmentManager().
                     findFragmentByTag(FRAGMENT_TAG);
         }
     }

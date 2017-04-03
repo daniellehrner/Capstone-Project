@@ -17,18 +17,15 @@
 package me.lehrner.newsgroupsndy.view;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.app.NavUtils;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatDialogFragment;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.view.LayoutInflater;
@@ -47,7 +44,7 @@ import me.lehrner.newsgroupsndy.R;
 import me.lehrner.newsgroupsndy.presenter.GroupPresenter;
 import me.lehrner.newsgroupsndy.view.interfaces.AddGroupView;
 
-public class AddGroupDialogFragment extends AppCompatDialogFragment
+public class AddGroupFragment extends Fragment
         implements AddGroupView, android.support.v7.widget.SearchView.OnQueryTextListener,
         LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -67,12 +64,12 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
     @BindView(R.id.add_group_subscribed)
     RecyclerView mGroupListView;
 
-    public AddGroupDialogFragment() {
+    public AddGroupFragment() {
         // Required empty public constructor
     }
 
-    public static AddGroupDialogFragment newInstance(int serverId) {
-        AddGroupDialogFragment fragment = new AddGroupDialogFragment();
+    public static AddGroupFragment newInstance(int serverId) {
+        AddGroupFragment fragment = new AddGroupFragment();
 
         Bundle args = new Bundle();
         args.putInt(SERVER_ID_KEY, serverId);
@@ -103,7 +100,7 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
                              Bundle savedInstanceState) {
         ((NDYApplication) getActivity().getApplication()).getComponent().inject(this);
 
-        View view = inflater.inflate(R.layout.fragment_add_group_dialog, container, false);
+        View view = inflater.inflate(R.layout.fragment_add_group, container, false);
 
         ButterKnife.bind(this, view);
 
@@ -124,33 +121,10 @@ public class AddGroupDialogFragment extends AppCompatDialogFragment
         }
     }
 
-    @SuppressLint("InflateParams")
-    @NonNull
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-
-        @SuppressLint("InflateParams")
-        View titleView = inflater.inflate(R.layout.dialog_add_group, null);
-
-        builder.setView(R.layout.fragment_add_group_dialog)
-                .setCustomTitle(titleView);
-
-        return builder.create();
-    }
 
     @Override
     public void closeAddGroupView() {
-        Dialog dialog = getDialog();
-
-        if (dialog != null) {
-            dialog.cancel();
-        }
-        else {
-            NavUtils.navigateUpFromSameTask(getActivity());
-        }
+        NavUtils.navigateUpFromSameTask(getActivity());
     }
 
     @Override
