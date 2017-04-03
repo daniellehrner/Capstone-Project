@@ -35,4 +35,5 @@
     <string name="not_subscribed">Not subscribed</string>
     <string name="subscribed">Subscribed</string>
     <string name="add_server">Add new server</string>
+    <string name="unsubscribe">Unsubscribe</string>
 </resources>

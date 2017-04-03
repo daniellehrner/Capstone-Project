@@ -93,10 +93,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupAdapter
             int id = mCursor.getInt(mCursor.getColumnIndex(GroupEntry._ID));
 
             switch (item.getItemId()) {
-                case R.id.group_menu_edit:
-                    mListViewClickListener.onListViewEditClick(id);
-                    break;
-                case R.id.group_menu_delete:
+                case R.id.group_menu_unsubscribe:
                     mGroupPresenter.toggleSubscribe(id);
                     break;
                 default:
